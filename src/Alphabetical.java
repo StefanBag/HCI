@@ -1,3 +1,5 @@
+import java.awt.Color;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
@@ -6,6 +8,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import javax.swing.BorderFactory;
+import javax.swing.DefaultListCellRenderer;
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -21,9 +25,10 @@ public class Alphabetical extends JFrame {
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
 	JList<String> WordList;
-	String words[] = { "A", "B", "C", "D", "E", "F", "G", "H", "I", "J" }; // temp to hold all words
+	String words[] = { "apple", "banana", "carrot", "dork", "evil", "fortnite", "grass", "harp", "Immune", "jamie" };
 	List<String> SortedList = new ArrayList<>();
 	DefaultListModel<String> listModel = new DefaultListModel<>();
+	private boolean helpMode = false; // flag for help mode
 
 	public Alphabetical() {
 		for (String word : words) {
@@ -33,6 +38,7 @@ public class Alphabetical extends JFrame {
 		}
 		Collections.sort(SortedList, String.CASE_INSENSITIVE_ORDER); // sort in true alphabetical order
 		WordList = new JList<>(listModel);
+		WordList.setCellRenderer(new HelpCellRenderer());
 
 		setTitle("Alphabetical");
 		setResizable(false);
@@ -67,17 +73,17 @@ public class Alphabetical extends JFrame {
 		contentPane.add(BackBtn);
 
 		// word list
-		WordList.setFont(new Font("Mongolian Baiti", Font.PLAIN, 15));
+		WordList.setFont(new Font("Mongolian Baiti", Font.PLAIN, 20));
 		WordList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		// make the list size adapt to the number of items
 		WordList.setVisibleRowCount(words.length);
-		Dimension prefferredSize = WordList.getPreferredSize();
-		WordList.setBounds(34, 123, prefferredSize.width + 20, prefferredSize.height);
+		Dimension preferredSize = WordList.getPreferredSize();
+		WordList.setBounds(348, 128, preferredSize.width + 100, preferredSize.height);
 		contentPane.add(WordList);
 
 		// move word up button
 		JButton WordUpBtn = new JButton("UP");
-		WordUpBtn.setBounds(497, 210, 89, 23);
+		WordUpBtn.setBounds(237, 128, 89, 23);
 		WordUpBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				// logic to move the word up in the list
@@ -96,7 +102,7 @@ public class Alphabetical extends JFrame {
 
 		// move word down button
 		JButton WordDownBtn = new JButton("Down");
-		WordDownBtn.setBounds(631, 210, 89, 23);
+		WordDownBtn.setBounds(237, 162, 89, 23);
 		WordDownBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				// logic to move the word down in the list
@@ -116,18 +122,18 @@ public class Alphabetical extends JFrame {
 
 		// check to see if words sorted alphabetically
 		JButton SubmitBtn = new JButton("SUBMIT");
-		SubmitBtn.setBounds(576, 328, 89, 23);
+		SubmitBtn.setBounds(237, 256, 89, 23);
 		SubmitBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				// logic to check if list is ordered alphabetically
 				if (AlphabeticalCheck()) {// if true
-					JOptionPane.showMessageDialog(Alphabetical.this, "List Sorted alphabetically", "success!",
+					JOptionPane.showMessageDialog(Alphabetical.this, "List Sorted alphabetically!", "success!",
 							JOptionPane.INFORMATION_MESSAGE);
-					System.out.println("List sorted alphabetically");
 				} else {
-					JOptionPane.showMessageDialog(Alphabetical.this, "List not sorted alphabetically", "Try Again",
-							JOptionPane.WARNING_MESSAGE);
-					System.out.println("List not sorted alphabetically");
+					// give the number of incorrectly placed words
+					JOptionPane.showMessageDialog(Alphabetical.this,
+							"List not sorted alphabetically. " + numberOfIncorrectWords() + " words in wrong position",
+							"Try Again", JOptionPane.WARNING_MESSAGE);
 				}
 			}
 		});
@@ -135,7 +141,7 @@ public class Alphabetical extends JFrame {
 
 		// undo previous move
 		JButton UndoBtn = new JButton("Undo");
-		UndoBtn.setBounds(241, 152, 89, 23);
+		UndoBtn.setBounds(498, 93, 89, 23);
 		UndoBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				// logic to undo the last performed action
@@ -146,7 +152,7 @@ public class Alphabetical extends JFrame {
 
 		// reset the word order to original order
 		JButton ResetBtn = new JButton("Reset");
-		ResetBtn.setBounds(241, 210, 89, 23);
+		ResetBtn.setBounds(392, 93, 89, 23);
 		ResetBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				// logic to reset the list to its original state
@@ -161,13 +167,12 @@ public class Alphabetical extends JFrame {
 		contentPane.add(ResetBtn);
 
 		JButton HelpBtn = new JButton("Help");
-		HelpBtn.setBounds(241, 276, 89, 23);
+		HelpBtn.setBounds(348, 376, 89, 23);
 		HelpBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				// logic to help the user sort the list alphabetically
-				// make the index green if in correct position
-				// make the index yellow if 1-3 indexes from correct position
-				// make the index red if 4+ indexes from correct position
+				helpMode = !helpMode;
+				WordList.repaint();
 			}
 		});
 		contentPane.add(HelpBtn);
@@ -180,5 +185,62 @@ public class Alphabetical extends JFrame {
 				return false;
 		}
 		return true;
+	}
+
+	// method to return the number of incorrectly placed words
+	private int numberOfIncorrectWords() {
+		int num = 0;
+		for (int i = 0; i < words.length; i++) {
+			if (!listModel.get(i).equals(SortedList.get(i)))
+				num++;
+		}
+		return num;
+	}
+
+	// helper method to return the distance from the given index to the correct
+	// sorted position
+	private int DistanceToCorrectPosition(int index) {
+		// first get the string at that index
+		String TargetWord = listModel.get(index);
+		// now find the index at which the TargetWord is in the SortedList
+		for (int i = 0; i < words.length; i++) {
+			if (SortedList.get(i).equals(TargetWord)) {
+				return Math.abs(index - i);
+			}
+		}
+		return Integer.MAX_VALUE;// should never return this
+	}
+
+	// custom class to paint individual cells
+	private class HelpCellRenderer extends DefaultListCellRenderer {
+		@Override
+		public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected,
+				boolean cellHasFocus) {
+			super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+
+			if (helpMode) {
+				int dist = DistanceToCorrectPosition(index);
+				Color bg;
+				if (dist == 0) {
+					bg = Color.green;
+				} else if (dist <= 3) {
+					bg = Color.yellow;
+				} else {
+					bg = Color.red;
+				}
+				setBackground(bg);
+
+				// indicate selection with a border so the user knows which item is selected
+				if (isSelected) {
+					setBorder(BorderFactory.createLineBorder(Color.black, 2));
+				} else {
+					setBorder(null);
+				}
+			} else {
+				// revert to default look
+				setBorder(null);
+			}
+			return this;
+		}
 	}
 }
