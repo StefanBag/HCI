@@ -10,6 +10,7 @@ import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JList;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.ListSelectionModel;
@@ -120,8 +121,12 @@ public class Alphabetical extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				// logic to check if list is ordered alphabetically
 				if (AlphabeticalCheck()) {// if true
+					JOptionPane.showMessageDialog(Alphabetical.this, "List Sorted alphabetically", "success!",
+							JOptionPane.INFORMATION_MESSAGE);
 					System.out.println("List sorted alphabetically");
 				} else {
+					JOptionPane.showMessageDialog(Alphabetical.this, "List not sorted alphabetically", "Try Again",
+							JOptionPane.WARNING_MESSAGE);
 					System.out.println("List not sorted alphabetically");
 				}
 			}
@@ -154,12 +159,24 @@ public class Alphabetical extends JFrame {
 			}
 		});
 		contentPane.add(ResetBtn);
+
+		JButton HelpBtn = new JButton("Help");
+		HelpBtn.setBounds(241, 276, 89, 23);
+		HelpBtn.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				// logic to help the user sort the list alphabetically
+				// make the index green if in correct position
+				// make the index yellow if 1-3 indexes from correct position
+				// make the index red if 4+ indexes from correct position
+			}
+		});
+		contentPane.add(HelpBtn);
 	}
 
 	// method to check whether the list is correct or not
 	private boolean AlphabeticalCheck() {
 		for (int i = 0; i < words.length; i++) {
-			if (listModel.get(i) != SortedList.get(i))
+			if (!listModel.get(i).equals(SortedList.get(i)))
 				return false;
 		}
 		return true;
