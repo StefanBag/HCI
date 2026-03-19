@@ -42,8 +42,7 @@ public class MainMenu extends JFrame {
 
 		// alphabetical button
 		JButton AlphabeticalBtn = new JButton("");
-		AlphabeticalBtn.setIcon(new ImageIcon(
-				"C:\\Users\\saldi\\OneDrive - The University of Western Ontario\\Western 2025-2026\\Sem 2\\COMPSCI 4474B\\HCI\\src\\Resources\\Images\\Alphabet.png"));
+		AlphabeticalBtn.setIcon(new ImageIcon(MainMenu.class.getResource("/Resources/Images/Alphabet.png")));
 		AlphabeticalBtn.setBounds(627, 62, 197, 95);
 		AlphabeticalBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {

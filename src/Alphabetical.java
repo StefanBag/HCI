@@ -2,6 +2,7 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
@@ -89,7 +90,10 @@ public class Alphabetical extends JFrame {
 
 		// move word up button
 		JButton WordUpBtn = new JButton("UP");
-		WordUpBtn.setBounds(237, 128, 89, 23);
+		WordUpBtn.setMargin(new Insets(2, 14, 2, 1));
+		WordUpBtn.setIconTextGap(0);
+		WordUpBtn.setIcon(new ImageIcon(Alphabetical.class.getResource("/Resources/Images/Up-Arrow.png")));
+		WordUpBtn.setBounds(237, 128, 75, 70);
 		WordUpBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				// logic to move the word up in the list
@@ -108,7 +112,10 @@ public class Alphabetical extends JFrame {
 
 		// move word down button
 		JButton WordDownBtn = new JButton("Down");
-		WordDownBtn.setBounds(237, 162, 89, 23);
+		WordDownBtn.setMargin(new Insets(2, 14, 2, 1));
+		WordDownBtn.setIconTextGap(0);
+		WordDownBtn.setIcon(new ImageIcon(Alphabetical.class.getResource("/Resources/Images/Down-Arrow.png")));
+		WordDownBtn.setBounds(237, 216, 75, 70);
 		WordDownBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				// logic to move the word down in the list
@@ -128,7 +135,7 @@ public class Alphabetical extends JFrame {
 
 		// check to see if words sorted alphabetically
 		JButton SubmitBtn = new JButton("SUBMIT");
-		SubmitBtn.setBounds(237, 256, 89, 23);
+		SubmitBtn.setBounds(237, 297, 89, 23);
 		SubmitBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				// logic to check if list is ordered alphabetically
