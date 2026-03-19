@@ -11,8 +11,10 @@ import java.util.List;
 import javax.swing.BorderFactory;
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.DefaultListModel;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -29,6 +31,7 @@ public class Alphabetical extends JFrame {
 	List<String> SortedList = new ArrayList<>();
 	DefaultListModel<String> listModel = new DefaultListModel<>();
 	private boolean helpMode = false; // flag for help mode
+	private final JLabel Background = new JLabel("");
 
 	public Alphabetical() {
 		for (String word : words) {
@@ -51,17 +54,20 @@ public class Alphabetical extends JFrame {
 
 		// instructions
 		JTextArea InstructionsTxt = new JTextArea();
+		InstructionsTxt.setBackground(Color.YELLOW);
+		InstructionsTxt.setForeground(Color.BLACK);
+		InstructionsTxt.setFont(new Font("Javanese Text", Font.PLAIN, 14));
 		InstructionsTxt.setWrapStyleWord(true);
 		InstructionsTxt.setLineWrap(true);
 		InstructionsTxt.setEditable(false);
 		InstructionsTxt.setText(
 				"Click on a word, then use the up/down arrows to move it. Arrange the words in alphabetical order (A to Z)");
-		InstructionsTxt.setBounds(373, 11, 461, 45);
+		InstructionsTxt.setBounds(373, 24, 461, 64);
 		contentPane.add(InstructionsTxt);
 
 		// back button
 		JButton BackBtn = new JButton("BACK");
-		BackBtn.setBounds(34, 12, 89, 23);
+		BackBtn.setBounds(37, 29, 89, 23);
 		BackBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				// return to MainMenu and close this window
@@ -132,7 +138,7 @@ public class Alphabetical extends JFrame {
 				} else {
 					// give the number of incorrectly placed words
 					JOptionPane.showMessageDialog(Alphabetical.this,
-							"List not sorted alphabetically. " + numberOfIncorrectWords() + " words in wrong position",
+							"List not sorted alphabetically. " + numberOfIncorrectWords() + " words in wrong position!",
 							"Try Again", JOptionPane.WARNING_MESSAGE);
 				}
 			}
@@ -168,6 +174,7 @@ public class Alphabetical extends JFrame {
 
 		JButton HelpBtn = new JButton("Help");
 		HelpBtn.setBounds(348, 376, 89, 23);
+		HelpBtn.setToolTipText("Green = correct position | Yellow = close | Red = far from correct spot");
 		HelpBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				// logic to help the user sort the list alphabetically
@@ -176,6 +183,18 @@ public class Alphabetical extends JFrame {
 			}
 		});
 		contentPane.add(HelpBtn);
+		Background.setIcon(new ImageIcon(Alphabetical.class.getResource("/Resources/Images/GreenBoard.jpg")));
+		Background.setBounds(0, 0, 844, 471);
+		contentPane.add(Background);
+
+		// JLabel LevelSelectBackground = new JLabel("");
+		// LevelSelectBackground.setIcon(new ImageIcon(background));
+		// LevelSelectBackground.setBounds(0, 0, 861, 482);
+		// contentPane.add(LevelSelectBackground);
+		// JLabel Background = new JLabel("");
+		// Background.setIcon(new ImageIcon("Resources/Images/GreenBoard.jpg"));
+		// Background.setBounds(0, 0, 860, 510);
+		// contentPane.add(Background);
 	}
 
 	// method to check whether the list is correct or not
