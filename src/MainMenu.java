@@ -4,6 +4,7 @@ import java.awt.event.ActionListener;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
@@ -28,7 +29,7 @@ public class MainMenu extends JFrame {
 
 		// word search button
 		JButton WordSearchBtn = new JButton("WORD SEARCH");
-		WordSearchBtn.setBounds(71, 62, 197, 95);
+		WordSearchBtn.setBounds(42, 35, 252, 133);
 		WordSearchBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				// word search button game action
@@ -43,7 +44,7 @@ public class MainMenu extends JFrame {
 		// alphabetical button
 		JButton AlphabeticalBtn = new JButton("");
 		AlphabeticalBtn.setIcon(new ImageIcon(MainMenu.class.getResource("/Resources/Images/Alphabet.png")));
-		AlphabeticalBtn.setBounds(627, 62, 197, 95);
+		AlphabeticalBtn.setBounds(568, 35, 252, 133);
 		AlphabeticalBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				// Alphabetical button game action
@@ -57,7 +58,7 @@ public class MainMenu extends JFrame {
 
 		// mixed words button
 		JButton MixedWordsBtn = new JButton("MIXED WORDS");
-		MixedWordsBtn.setBounds(71, 333, 197, 95);
+		MixedWordsBtn.setBounds(42, 295, 252, 133);
 		MixedWordsBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				// word Mixed Words button game action
@@ -71,7 +72,7 @@ public class MainMenu extends JFrame {
 
 		// missing letter button
 		JButton MissingLetterBtn = new JButton("MISSING LETTER");
-		MissingLetterBtn.setBounds(627, 333, 197, 95);
+		MissingLetterBtn.setBounds(568, 295, 252, 133);
 		MissingLetterBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				// word Missing Letter button game action
@@ -85,7 +86,7 @@ public class MainMenu extends JFrame {
 
 		// Wordle button
 		JButton WordleBtn = new JButton("WORDLE");
-		WordleBtn.setBounds(312, 165, 197, 95);
+		WordleBtn.setBounds(304, 168, 252, 133);
 		WordleBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				// Wordle button game action
@@ -97,6 +98,11 @@ public class MainMenu extends JFrame {
 			}
 		});
 		contentPane.add(WordleBtn);
+
+		JLabel background = new JLabel("");
+		background.setIcon(new ImageIcon(MainMenu.class.getResource("/Resources/Images/GreenBoard.jpg")));
+		background.setBounds(0, 0, 844, 471);
+		contentPane.add(background);
 
 	}
 }
