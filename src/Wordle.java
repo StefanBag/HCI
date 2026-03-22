@@ -20,13 +20,11 @@ import javax.swing.border.LineBorder;
 
 /**
  * Wordle-style spelling game: guess a 5-letter word in up to 6 tries.
- * Layout and style follow {@link Alphabetical} and {@link MainMenu}.
  */
 public class Wordle extends JFrame {
 
 	private static final long serialVersionUID = 1L;
 
-	/** EDIT: Add or change 5-letter words (uppercase recommended). All must be exactly 5 letters. */
 	private static final String[] WORD_BANK = { "CRANE", "PLANT", "HOUSE", "GRAPE", "LIGHT", "BRAIN", "CHAIR", "STORM",
 			"APPLE", "BEACH", "DANCE", "EARTH", "FLAME", "GHOST", "HEART", "IMAGE", "JOKER", "KNIFE", "LEMON", "MUSIC" };
 
@@ -66,7 +64,7 @@ public class Wordle extends JFrame {
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
 
-		// Instructions (same pattern as Alphabetical: yellow JTextArea)
+		// Instructions 
 		JTextArea InstructionsTxt = new JTextArea();
 		InstructionsTxt.setBackground(Color.YELLOW);
 		InstructionsTxt.setForeground(Color.BLACK);
