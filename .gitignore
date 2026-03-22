@@ -1,0 +1,8 @@
+# macOS
+.DS_Store
+
+# Compiled Java (including nested classes like Foo$1.class)
+**/*.class
+
+# Eclipse / build output
+bin/

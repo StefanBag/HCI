@@ -1,6 +1,12 @@
+import java.awt.Graphics2D;
+import java.awt.Insets;
+import java.awt.RenderingHints;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.image.BufferedImage;
+import java.net.URL;
 
+import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -12,6 +18,26 @@ public class MainMenu extends JFrame {
 
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
+
+	/** Scale/crop to fill (no empty bands). */
+	private static ImageIcon iconCover(URL url, int w, int h) {
+		try {
+			BufferedImage src = ImageIO.read(url);
+			if (src == null) {
+				return new ImageIcon(url);
+			}
+			double s = Math.max((double) w / src.getWidth(), (double) h / src.getHeight());
+			int nw = (int) Math.round(src.getWidth() * s), nh = (int) Math.round(src.getHeight() * s);
+			BufferedImage out = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
+			Graphics2D g = out.createGraphics();
+			g.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+			g.drawImage(src, (w - nw) / 2, (h - nh) / 2, nw, nh, null);
+			g.dispose();
+			return new ImageIcon(out);
+		} catch (Exception e) {
+			return new ImageIcon(url);
+		}
+	}
 
 	/*
 	 * MainMenu GUI class which will replace the original Main Menu GUI from the old
@@ -85,7 +111,9 @@ public class MainMenu extends JFrame {
 		contentPane.add(MissingLetterBtn);
 
 		// Wordle button
-		JButton WordleBtn = new JButton("WORDLE");
+		JButton WordleBtn = new JButton("");
+		WordleBtn.setMargin(new Insets(0, 0, 0, 0));
+		WordleBtn.setIcon(iconCover(MainMenu.class.getResource("/Resources/Images/wordle.png"), 252, 133));
 		WordleBtn.setBounds(304, 168, 252, 133);
 		WordleBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
