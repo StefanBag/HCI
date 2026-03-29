@@ -1,6 +1,5 @@
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
@@ -20,30 +19,59 @@ import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
+import javax.swing.ListModel;
 import javax.swing.ListSelectionModel;
+import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
 
 public class Alphabetical extends JFrame {
 
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
-	JList<String> WordList;
-	String words[] = { "apple", "banana", "carrot", "dork", "evil", "fortnite", "grass", "harp", "Immune", "jamie" };
-	List<String> SortedList = new ArrayList<>();
+
+	// Master model holding all words in current order
 	DefaultListModel<String> listModel = new DefaultListModel<>();
+
+	// Sorted list for reference (case‑insensitive alphabetical order)
+	List<String> SortedList = new ArrayList<>();
+
+	// Original words (used for reset)
+	// Original words (used for reset)
+	String words[] = { "apple", "banana", "carrot", "dork", "evil", "fortnite", "grass", "harp", "immune", "jamie",
+			"hello", "rello", "dog", "meow", "zebra", "orange", "pencil", "keyboard", "monitor", "bottle", "window",
+			"rocket", "island", "shadow", "thunder" };
+
+	// Two JLists that display portions of the master model
+	private JList<String> leftList;
+	private JList<String> rightList;
+
+	// Tracks the currently selected word in the master model
+	private int selectedMasterIndex = -1;
+
 	private boolean helpMode = false; // flag for help mode
+
+	// Maximum number of rows per column
+	private static final int MAX_ROWS_PER_COLUMN = 13;
+
+	// Flag to ignore selection events during manual updates
+	private boolean ignoreSelectionEvents = false;
+
 	private final JLabel Background = new JLabel("");
 
+	private final Border padding = new EmptyBorder(10, 15, 10, 15);
+
+	private JTextArea[] listedNumbers;
+
 	public Alphabetical() {
+		// Populate master model and sorted list
 		for (String word : words) {
 			listModel.addElement(word);
 			SortedList.add(word);
 
 		}
-		Collections.sort(SortedList, String.CASE_INSENSITIVE_ORDER); // sort in true alphabetical order
-		WordList = new JList<>(listModel);
-		WordList.setCellRenderer(new HelpCellRenderer());
+		Collections.sort(SortedList, String.CASE_INSENSITIVE_ORDER);
 
+		// Frame setup
 		setTitle("Alphabetical");
 		setResizable(false);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -53,7 +81,20 @@ public class Alphabetical extends JFrame {
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
 
-		// instructions
+		// populate each listedNumbers JTextArea array
+		listedNumbers = new JTextArea[words.length];
+		for (int i = 0; i < words.length; i++) {
+			listedNumbers[i] = new JTextArea();
+			listedNumbers[i].setText(String.valueOf(i + 1));
+			listedNumbers[i].setEditable(false);
+			listedNumbers[i].setOpaque(false);
+			listedNumbers[i].setFont(new Font("Monospaced", Font.PLAIN, 16));
+			listedNumbers[i].setForeground(new Color(255, 255, 255));
+			contentPane.add(listedNumbers[i]);
+
+		}
+
+		// Instructions
 		JTextArea InstructionsTxt = new JTextArea();
 		InstructionsTxt.setBackground(Color.YELLOW);
 		InstructionsTxt.setForeground(Color.BLACK);
@@ -63,15 +104,19 @@ public class Alphabetical extends JFrame {
 		InstructionsTxt.setEditable(false);
 		InstructionsTxt.setText(
 				"Click on a word, then use the up/down arrows to move it. Arrange the words in alphabetical order (A to Z)");
-		InstructionsTxt.setBounds(373, 24, 461, 64);
+		InstructionsTxt.setBounds(208, 52, 461, 64);
 		contentPane.add(InstructionsTxt);
 
-		// back button
-		JButton BackBtn = new JButton("BACK");
-		BackBtn.setBounds(37, 29, 89, 23);
+		// Back button
+		JButton BackBtn = new JButton();
+		BackBtn.setBorderPainted(false);
+		BackBtn.setOpaque(false);
+		BackBtn.setContentAreaFilled(false);
+		BackBtn.setIcon(new ImageIcon(Alphabetical.class.getResource("/Resources/Images/back.png")));
+		BackBtn.setPressedIcon(new ImageIcon(Alphabetical.class.getResource("/Resources/Images/back-Pressed.png")));
+		BackBtn.setBounds(47, 38, 89, 34);
 		BackBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				// return to MainMenu and close this window
 				MainMenu x = new MainMenu();
 				x.setVisible(true);
 				dispose();
@@ -79,71 +124,130 @@ public class Alphabetical extends JFrame {
 		});
 		contentPane.add(BackBtn);
 
-		// word list
-		WordList.setFont(new Font("Mongolian Baiti", Font.PLAIN, 20));
-		WordList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-		// make the list size adapt to the number of items
-		WordList.setVisibleRowCount(words.length);
-		Dimension preferredSize = WordList.getPreferredSize();
-		WordList.setBounds(348, 128, preferredSize.width + 100, preferredSize.height);
-		contentPane.add(WordList);
+		// ---------- Create the two JLists ----------
+		leftList = new JList<>();
+		rightList = new JList<>();
 
-		// move word up button
+		// Common settings for both lists
+		leftList.setFont(new Font("Mongolian Baiti", Font.PLAIN, 20));
+		rightList.setFont(new Font("Mongolian Baiti", Font.PLAIN, 20));
+		leftList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		rightList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		leftList.setFixedCellHeight(20);
+		rightList.setFixedCellHeight(20);
+		leftList.setBorder(BorderFactory.createEmptyBorder());
+		rightList.setBorder(BorderFactory.createEmptyBorder());
+
+		// Custom renderers that know whether they belong to left or right list
+		leftList.setCellRenderer(new HelpCellRenderer(true));
+		rightList.setCellRenderer(new HelpCellRenderer(false));
+
+		// Selection listeners – update global selected index (ignored when flag is
+		// true)
+		leftList.addListSelectionListener(e -> {
+			if (ignoreSelectionEvents)
+				return;
+			if (!e.getValueIsAdjusting()) {
+				int local = leftList.getSelectedIndex();
+				if (local != -1) {
+					selectedMasterIndex = local;
+				} else {
+					selectedMasterIndex = -1;
+				}
+			}
+		});
+		rightList.addListSelectionListener(e -> {
+			if (ignoreSelectionEvents)
+				return;
+			if (!e.getValueIsAdjusting()) {
+				int local = rightList.getSelectedIndex();
+				if (local != -1) {
+					int leftCount = Math.min(listModel.getSize(), MAX_ROWS_PER_COLUMN);
+					selectedMasterIndex = leftCount + local;
+				} else {
+					selectedMasterIndex = -1;
+				}
+			}
+		});
+
+		// Initially fill the two lists from the master model and lay them out
+		updateLists();
+		layoutLists();
+		PositionNumbers();
+
+		// Add lists to content pane
+		contentPane.add(leftList);
+		contentPane.add(rightList);
+
+		// Move word up button
 		JButton WordUpBtn = new JButton("UP");
+		WordUpBtn.setSelectedIcon(null);
 		WordUpBtn.setMargin(new Insets(2, 14, 2, 1));
 		WordUpBtn.setIconTextGap(0);
-		WordUpBtn.setIcon(new ImageIcon(Alphabetical.class.getResource("/Resources/Images/Up-Arrow.png")));
-		WordUpBtn.setBounds(237, 128, 75, 70);
+		WordUpBtn.setOpaque(false);
+		WordUpBtn.setContentAreaFilled(false);
+		WordUpBtn.setBorderPainted(false);
+		WordUpBtn.setIcon(new ImageIcon(Alphabetical.class.getResource("/Resources/Images/ArrowUp.png")));
+		WordUpBtn.setPressedIcon(new ImageIcon(Alphabetical.class.getResource("/Resources/Images/ArrowUpPressed.png")));
+		WordUpBtn.setBounds(406, 158, 75, 70);
 		WordUpBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				// logic to move the word up in the list
-				int SelectedWordIndex = WordList.getSelectedIndex();
-				if (SelectedWordIndex != -1 && SelectedWordIndex != 0) {
-					String temp = listModel.get(SelectedWordIndex);
-					listModel.set(SelectedWordIndex, listModel.get(SelectedWordIndex - 1));
-					listModel.set(SelectedWordIndex - 1, temp);
+				if (selectedMasterIndex > 0) {
+					// Swap with previous element in master model
+					String word = listModel.remove(selectedMasterIndex);
+					listModel.add(selectedMasterIndex - 1, word);
+					selectedMasterIndex--;
 
-					// keep selection on the moved item
-					WordList.setSelectedIndex(SelectedWordIndex - 1);
+					// Update both lists and restore selection manually
+					ignoreSelectionEvents = true;
+					updateLists();
+					layoutLists();
+					setSelectionToMasterIndex(selectedMasterIndex);
+					ignoreSelectionEvents = false;
 				}
 			}
 		});
 		contentPane.add(WordUpBtn);
 
-		// move word down button
+		// Move word down button
 		JButton WordDownBtn = new JButton("Down");
 		WordDownBtn.setMargin(new Insets(2, 14, 2, 1));
 		WordDownBtn.setIconTextGap(0);
-		WordDownBtn.setIcon(new ImageIcon(Alphabetical.class.getResource("/Resources/Images/Down-Arrow.png")));
-		WordDownBtn.setBounds(237, 216, 75, 70);
+		WordDownBtn.setOpaque(false);
+		WordDownBtn.setContentAreaFilled(false);
+		WordDownBtn.setBorderPainted(false);
+		WordDownBtn.setIcon(new ImageIcon(Alphabetical.class.getResource("/Resources/Images/ArrowDown.png")));
+		WordDownBtn.setPressedIcon(
+				new ImageIcon(Alphabetical.class.getResource("/Resources/Images/ArrowDown-Pressed.png")));
+		WordDownBtn.setBounds(406, 251, 75, 64);
 		WordDownBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				// logic to move the word down in the list
-				int SelectedWordIndex = WordList.getSelectedIndex();
-				if (SelectedWordIndex != -1 && SelectedWordIndex < listModel.getSize() - 1) {
-					// swap elements in the model
-					String temp = listModel.get(SelectedWordIndex);
-					listModel.set(SelectedWordIndex, listModel.get(SelectedWordIndex + 1));
-					listModel.set(SelectedWordIndex + 1, temp);
+				if (selectedMasterIndex != -1 && selectedMasterIndex < listModel.getSize() - 1) {
+					// Swap with next element in master model
+					String word = listModel.remove(selectedMasterIndex);
+					listModel.add(selectedMasterIndex + 1, word);
+					selectedMasterIndex++;
 
-					// keep selection on the moved item
-					WordList.setSelectedIndex(SelectedWordIndex + 1);
+					// Update both lists and restore selection manually
+					ignoreSelectionEvents = true;
+					updateLists();
+					layoutLists();
+					setSelectionToMasterIndex(selectedMasterIndex);
+					ignoreSelectionEvents = false;
 				}
 			}
 		});
 		contentPane.add(WordDownBtn);
 
-		// check to see if words sorted alphabetically
+		// Submit button – checks if list is sorted
 		JButton SubmitBtn = new JButton("SUBMIT");
-		SubmitBtn.setBounds(237, 297, 89, 23);
+		SubmitBtn.setBounds(47, 360, 89, 23);
 		SubmitBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				// logic to check if list is ordered alphabetically
-				if (AlphabeticalCheck()) {// if true
+				if (AlphabeticalCheck()) {
 					JOptionPane.showMessageDialog(Alphabetical.this, "List Sorted alphabetically!", "success!",
 							JOptionPane.INFORMATION_MESSAGE);
 				} else {
-					// give the number of incorrectly placed words
 					JOptionPane.showMessageDialog(Alphabetical.this,
 							"List not sorted alphabetically. " + numberOfIncorrectWords() + " words in wrong position!",
 							"Try Again", JOptionPane.WARNING_MESSAGE);
@@ -152,59 +256,177 @@ public class Alphabetical extends JFrame {
 		});
 		contentPane.add(SubmitBtn);
 
-		// undo previous move
+		// Undo button (placeholder)
 		JButton UndoBtn = new JButton("Undo");
+		UndoBtn.setVisible(false);
 		UndoBtn.setBounds(498, 93, 89, 23);
 		UndoBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				// logic to undo the last performed action
-
+				// TODO: implement undo functionality
 			}
 		});
 		contentPane.add(UndoBtn);
 
-		// reset the word order to original order
-		JButton ResetBtn = new JButton("Reset");
-		ResetBtn.setBounds(392, 93, 89, 23);
+		// Reset button – restores original order
+		JButton ResetBtn = new JButton();
+		ResetBtn.setBorderPainted(false);
+		ResetBtn.setOpaque(false);
+		ResetBtn.setContentAreaFilled(false);
+		ResetBtn.setIcon(new ImageIcon(Alphabetical.class.getResource("/Resources/Images/restart.png")));
+		ResetBtn.setPressedIcon(new ImageIcon(Alphabetical.class.getResource("/Resources/Images/restart-pressed.png")));
+		ResetBtn.setBounds(714, 99, 89, 34);
 		ResetBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				// logic to reset the list to its original state
-				// clear the list
 				listModel.clear();
-				// add all elements from words list again
 				for (String word : words) {
 					listModel.addElement(word);
 				}
+				selectedMasterIndex = -1;
+				ignoreSelectionEvents = true;
+				updateLists();
+				layoutLists();
+				ignoreSelectionEvents = false;
+				// Clear any lingering selection
+				leftList.clearSelection();
+				rightList.clearSelection();
 			}
 		});
 		contentPane.add(ResetBtn);
 
-		JButton HelpBtn = new JButton("Help");
-		HelpBtn.setBounds(348, 376, 89, 23);
+		// Help button – toggles help mode
+		JButton HelpBtn = new JButton();
+		HelpBtn.setOpaque(false);
+		HelpBtn.setContentAreaFilled(false);
+		HelpBtn.setBorderPainted(false);
+		HelpBtn.setIcon(new ImageIcon(Alphabetical.class.getResource("/Resources/Images/information.png")));
+		HelpBtn.setPressedIcon(
+				new ImageIcon(Alphabetical.class.getResource("/Resources/Images/information-pressed.png")));
+		HelpBtn.setBounds(395, 360, 89, 34);
 		HelpBtn.setToolTipText("Green = correct position | Yellow = close | Red = far from correct spot");
 		HelpBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				// logic to help the user sort the list alphabetically
 				helpMode = !helpMode;
-				WordList.repaint();
+				leftList.repaint();
+				rightList.repaint();
 			}
 		});
 		contentPane.add(HelpBtn);
+
+		// Background – add first so it stays behind all other components
 		Background.setIcon(new ImageIcon(Alphabetical.class.getResource("/Resources/Images/GreenBoard.jpg")));
 		Background.setBounds(0, 0, 844, 471);
 		contentPane.add(Background);
-
-		// JLabel LevelSelectBackground = new JLabel("");
-		// LevelSelectBackground.setIcon(new ImageIcon(background));
-		// LevelSelectBackground.setBounds(0, 0, 861, 482);
-		// contentPane.add(LevelSelectBackground);
-		// JLabel Background = new JLabel("");
-		// Background.setIcon(new ImageIcon("Resources/Images/GreenBoard.jpg"));
-		// Background.setBounds(0, 0, 860, 510);
-		// contentPane.add(Background);
 	}
 
-	// method to check whether the list is correct or not
+	/**
+	 * Updates the two JLists to reflect the current state of the master model. The
+	 * left list gets up to MAX_ROWS_PER_COLUMN items. The right list gets any
+	 * remaining items.
+	 */
+	private void updateLists() {
+		int total = listModel.getSize();
+		int leftCount = Math.min(total, MAX_ROWS_PER_COLUMN);
+		int rightCount = total - leftCount;
+
+		// Left list model
+		DefaultListModel<String> leftModel = new DefaultListModel<>();
+		for (int i = 0; i < leftCount; i++) {
+			leftModel.addElement(listModel.getElementAt(i));
+		}
+		leftList.setModel(leftModel);
+		leftList.setVisibleRowCount(leftCount > 0 ? leftCount : 1);
+
+		// Right list model
+		if (rightCount > 0) {
+			DefaultListModel<String> rightModel = new DefaultListModel<>();
+			for (int i = leftCount; i < total; i++) {
+				rightModel.addElement(listModel.getElementAt(i));
+			}
+			rightList.setModel(rightModel);
+			rightList.setVisibleRowCount(rightCount);
+		} else {
+			rightList.setModel(new DefaultListModel<>());
+			rightList.setVisibleRowCount(1);
+		}
+	}
+
+	/**
+	 * Positions the two lists and shows/hides the right list as needed.
+	 */
+	private void layoutLists() {
+		int total = listModel.getSize();
+		int leftCount = Math.min(total, MAX_ROWS_PER_COLUMN);
+		int rightCount = total - leftCount;
+
+		leftList.setBounds(208, 149, leftList.getPreferredSize().width + 100, leftList.getPreferredSize().height);
+
+		if (rightCount > 0) {
+			int rightX = leftList.getX() + leftList.getWidth() + 135;
+			int rightY = leftList.getY();
+			rightList.setBounds(rightX, rightY, rightList.getPreferredSize().width + 100,
+					rightList.getPreferredSize().height);
+			rightList.setVisible(true);
+		} else {
+			rightList.setVisible(false);
+		}
+
+	}
+
+	/**
+	 * Position the numbers of leftList and RightList to be called ONLY once, not
+	 * after every action
+	 */
+
+	private void PositionNumbers() {
+		int total = listModel.getSize();
+		// Number list: width based on the largest number, height = total rows * fixed
+		// cell height
+		int numberWidth = 50; // fallback
+		if (total > 0) {
+			String largest = String.valueOf(total);
+			// Estimate width: roughly 12 pixels per digit + padding
+			numberWidth = Math.max(40, largest.length() * 12 + 10);
+		}
+		int numberHeight = leftList.getFixedCellHeight();
+
+		// using this idea, iterate and populate the numbers beside the space beside the
+		// list
+		int x = 0;
+		int leftListY = leftList.getY();
+		for (int i = 0; i < listedNumbers.length; i++) {
+			// first check if we dont need to populate the listed numbers of rightlist
+			ListModel<String> model = leftList.getModel();
+			if (i < model.getSize()) { // print the leftList numbers
+				int y = leftListY + (i * numberHeight);
+				listedNumbers[i].setBounds(leftList.getX() - numberWidth - 5, y, numberWidth, numberHeight);
+			} else { // print the rightList numbers
+				int y = leftListY + (x++ * numberHeight);
+				listedNumbers[i].setBounds(rightList.getX() + rightList.getPreferredSize().width + 120, y, numberWidth,
+						numberHeight);
+			}
+		}
+	}
+
+	/**
+	 * Manually selects the word at the given master index in the appropriate list.
+	 * Assumes ignoreSelectionEvents is already true.
+	 */
+	private void setSelectionToMasterIndex(int masterIndex) {
+		if (masterIndex < 0 || masterIndex >= listModel.getSize()) {
+			return;
+		}
+		int leftCount = Math.min(listModel.getSize(), MAX_ROWS_PER_COLUMN);
+		if (masterIndex < leftCount) {
+			leftList.setSelectedIndex(masterIndex);
+		} else {
+			int rightIndex = masterIndex - leftCount;
+			if (rightList.isVisible() && rightIndex < rightList.getModel().getSize()) {
+				rightList.setSelectedIndex(rightIndex);
+			}
+		}
+	}
+
+	// ---------- Helper methods for correctness checking ----------
 	private boolean AlphabeticalCheck() {
 		for (int i = 0; i < words.length; i++) {
 			if (!listModel.get(i).equals(SortedList.get(i)))
@@ -213,7 +435,6 @@ public class Alphabetical extends JFrame {
 		return true;
 	}
 
-	// method to return the number of incorrectly placed words
 	private int numberOfIncorrectWords() {
 		int num = 0;
 		for (int i = 0; i < words.length; i++) {
@@ -223,29 +444,35 @@ public class Alphabetical extends JFrame {
 		return num;
 	}
 
-	// helper method to return the distance from the given index to the correct
-	// sorted position
 	private int DistanceToCorrectPosition(int index) {
-		// first get the string at that index
 		String TargetWord = listModel.get(index);
-		// now find the index at which the TargetWord is in the SortedList
 		for (int i = 0; i < words.length; i++) {
 			if (SortedList.get(i).equals(TargetWord)) {
 				return Math.abs(index - i);
 			}
 		}
-		return Integer.MAX_VALUE;// should never return this
+		return Integer.MAX_VALUE;
 	}
 
-	// custom class to paint individual cells
+	// ---------- Custom cell renderer that knows its column ----------
 	private class HelpCellRenderer extends DefaultListCellRenderer {
+		private final boolean isLeft;
+
+		public HelpCellRenderer(boolean isLeft) {
+			this.isLeft = isLeft;
+		}
+
 		@Override
 		public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected,
 				boolean cellHasFocus) {
 			super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+			setBorder(padding);
 
 			if (helpMode) {
-				int dist = DistanceToCorrectPosition(index);
+				int leftCount = Math.min(listModel.getSize(), MAX_ROWS_PER_COLUMN);
+				int globalIndex = isLeft ? index : leftCount + index;
+
+				int dist = DistanceToCorrectPosition(globalIndex);
 				Color bg;
 				if (dist == 0) {
 					bg = Color.green;
@@ -256,14 +483,12 @@ public class Alphabetical extends JFrame {
 				}
 				setBackground(bg);
 
-				// indicate selection with a border so the user knows which item is selected
 				if (isSelected) {
 					setBorder(BorderFactory.createLineBorder(Color.black, 2));
 				} else {
 					setBorder(null);
 				}
 			} else {
-				// revert to default look
 				setBorder(null);
 			}
 			return this;
