@@ -240,8 +240,14 @@ public class Alphabetical extends JFrame {
 		contentPane.add(WordDownBtn);
 
 		// Submit button – checks if list is sorted
-		JButton SubmitBtn = new JButton("SUBMIT");
-		SubmitBtn.setBounds(47, 360, 89, 23);
+		JButton SubmitBtn = new JButton();
+		SubmitBtn.setIcon(new ImageIcon(Alphabetical.class.getResource("/Resources/Images/scorebutton.png")));
+		SubmitBtn.setPressedIcon(
+				new ImageIcon(Alphabetical.class.getResource("/Resources/Images/scorebutton-pressed.png")));
+		SubmitBtn.setOpaque(false);
+		SubmitBtn.setContentAreaFilled(false);
+		SubmitBtn.setBorderPainted(false);
+		SubmitBtn.setBounds(47, 360, 89, 41);
 		SubmitBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				if (AlphabeticalCheck()) {
