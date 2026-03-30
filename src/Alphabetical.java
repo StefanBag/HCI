@@ -32,14 +32,12 @@ public class Alphabetical extends JFrame {
 	// Master model holding all words in current order
 	DefaultListModel<String> listModel = new DefaultListModel<>();
 
-	// Sorted list for reference (case‑insensitive alphabetical order)
+	// Sorted list for reference (case-insensitive alphabetical order)
 	List<String> SortedList = new ArrayList<>();
 
-	// Original words (used for reset)
-	// Original words (used for reset)
 	String words[] = { "apple", "banana", "carrot", "dork", "evil", "fortnite", "grass", "harp", "immune", "jamie",
-			"hello", "rello", "dog", "meow", "zebra", "orange", "pencil", "keyboard", "monitor", "bottle", "window",
-			"rocket", "island", "shadow", "thunder" };
+			"hello", "dog", "meow", "zebra", "orange", "pencil", "keyboard", "monitor", "bottle", "window", "rocket",
+			"island", "shadow", "thunder" };
 
 	// Two JLists that display portions of the master model
 	private JList<String> leftList;
@@ -96,15 +94,16 @@ public class Alphabetical extends JFrame {
 
 		// Instructions
 		JTextArea InstructionsTxt = new JTextArea();
+		InstructionsTxt.setMargin(new Insets(4, 4, 4, 4));
 		InstructionsTxt.setBackground(Color.YELLOW);
 		InstructionsTxt.setForeground(Color.BLACK);
-		InstructionsTxt.setFont(new Font("Javanese Text", Font.PLAIN, 14));
+		InstructionsTxt.setFont(new Font("Arial", Font.BOLD, 16));
 		InstructionsTxt.setWrapStyleWord(true);
 		InstructionsTxt.setLineWrap(true);
 		InstructionsTxt.setEditable(false);
 		InstructionsTxt.setText(
 				"Click on a word, then use the up/down arrows to move it. Arrange the words in alphabetical order (A to Z)");
-		InstructionsTxt.setBounds(208, 52, 461, 64);
+		InstructionsTxt.setBounds(208, 38, 478, 74);
 		contentPane.add(InstructionsTxt);
 
 		// Back button
@@ -117,9 +116,14 @@ public class Alphabetical extends JFrame {
 		BackBtn.setBounds(47, 38, 89, 34);
 		BackBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				MainMenu x = new MainMenu();
-				x.setVisible(true);
-				dispose();
+				int result = JOptionPane.showConfirmDialog(Alphabetical.this,
+						"Your current sorting progress will be lost. Are you sure you want to return to the main menu?",
+						"Exit to Main Menu", JOptionPane.YES_NO_OPTION);
+				if (result == JOptionPane.YES_OPTION) {
+					MainMenu x = new MainMenu();
+					x.setVisible(true);
+					dispose();
+				}
 			}
 		});
 		contentPane.add(BackBtn);
@@ -241,13 +245,14 @@ public class Alphabetical extends JFrame {
 
 		// Submit button – checks if list is sorted
 		JButton SubmitBtn = new JButton();
-		SubmitBtn.setIcon(new ImageIcon(Alphabetical.class.getResource("/Resources/Images/scorebutton.png")));
+		SubmitBtn.setIcon(new ImageIcon(Alphabetical.class.getResource("/Resources/Images/submitbutton.png")));
 		SubmitBtn.setPressedIcon(
-				new ImageIcon(Alphabetical.class.getResource("/Resources/Images/scorebutton-pressed.png")));
+				new ImageIcon(Alphabetical.class.getResource("/Resources/Images/submitbutton-pressed.png")));
 		SubmitBtn.setOpaque(false);
 		SubmitBtn.setContentAreaFilled(false);
 		SubmitBtn.setBorderPainted(false);
-		SubmitBtn.setBounds(47, 360, 89, 41);
+		SubmitBtn.setToolTipText("Submit your sorted list for verification");
+		SubmitBtn.setBounds(47, 360, 89, 34);
 		SubmitBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				if (AlphabeticalCheck()) {
@@ -283,18 +288,23 @@ public class Alphabetical extends JFrame {
 		ResetBtn.setBounds(714, 99, 89, 34);
 		ResetBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				listModel.clear();
-				for (String word : words) {
-					listModel.addElement(word);
+				int result = JOptionPane.showConfirmDialog(Alphabetical.this,
+						"Are you sure you want to reset the word order?", "Confirm Reset", JOptionPane.YES_NO_OPTION,
+						JOptionPane.QUESTION_MESSAGE);
+				if (result == JOptionPane.YES_OPTION) {
+					listModel.clear();
+					for (String word : words) {
+						listModel.addElement(word);
+					}
+					selectedMasterIndex = -1;
+					ignoreSelectionEvents = true;
+					updateLists();
+					layoutLists();
+					ignoreSelectionEvents = false;
+					// Clear any lingering selection
+					leftList.clearSelection();
+					rightList.clearSelection();
 				}
-				selectedMasterIndex = -1;
-				ignoreSelectionEvents = true;
-				updateLists();
-				layoutLists();
-				ignoreSelectionEvents = false;
-				// Clear any lingering selection
-				leftList.clearSelection();
-				rightList.clearSelection();
 			}
 		});
 		contentPane.add(ResetBtn);
@@ -318,7 +328,7 @@ public class Alphabetical extends JFrame {
 		});
 		contentPane.add(HelpBtn);
 
-		// Background – add first so it stays behind all other components
+		// Background – add last so it stays behind all other components
 		Background.setIcon(new ImageIcon(Alphabetical.class.getResource("/Resources/Images/GreenBoard.jpg")));
 		Background.setBounds(0, 0, 844, 471);
 		contentPane.add(Background);
