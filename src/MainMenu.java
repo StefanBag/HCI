@@ -91,27 +91,27 @@ public class MainMenu extends JFrame {
 			btn.addActionListener(e -> {
 				switch (index) {
 					case 0: // Alphabetical
-						Alphabetical a = new Alphabetical();
+						Alphabetical a = new Alphabetical(words);
 						a.setVisible(true);
 						dispose();
 						break;
 					case 1: // Word Search
-						WordSearch ws = new WordSearch();
+						WordSearch ws = new WordSearch(words);
 						ws.setVisible(true);
 						dispose();						
 						break;
 					case 2: // Wordle
-						Wordle w = new Wordle();
+						Wordle w = new Wordle(words);
 						w.setVisible(true);
 						dispose();					
 						break;
 					case 3: // Missing Letter
-						MissingLetter ml = new MissingLetter();
+						MissingLetter ml = new MissingLetter(words);
 						ml.setVisible(true);
 						dispose();					
 						break;
 					case 4: // Mixed Words
-						MixedWords mw = new MixedWords();
+						MixedWords mw = new MixedWords(words);
 						mw.setVisible(true);
 						dispose();
 						break;
