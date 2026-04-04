@@ -1,3 +1,4 @@
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Font;
@@ -23,6 +24,7 @@ import javax.swing.ListModel;
 import javax.swing.ListSelectionModel;
 import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
+import javax.swing.border.LineBorder;
 
 public class Alphabetical extends JFrame {
 
@@ -34,10 +36,6 @@ public class Alphabetical extends JFrame {
 
 	// Sorted list for reference (case-insensitive alphabetical order)
 	List<String> SortedList = new ArrayList<>();
-
-//	String words[] = { "apple", "banana", "carrot", "dork", "evil", "fortnite", "grass", "harp", "immune", "jamie",
-//			"hello", "dog", "meow", "zebra", "orange", "pencil", "keyboard", "monitor", "bottle", "window", "rocket",
-//			"island", "shadow", "thunder" };
 
 	private String[] words;
 	// Two JLists that display portions of the master model
@@ -95,19 +93,21 @@ public class Alphabetical extends JFrame {
 
 		}
 
-		// Instructions
-		JTextArea InstructionsTxt = new JTextArea();
-		InstructionsTxt.setMargin(new Insets(4, 4, 4, 4));
-		InstructionsTxt.setBackground(Color.white);
-		InstructionsTxt.setForeground(Color.BLACK);
-		InstructionsTxt.setFont(new Font("Arial", Font.BOLD, 16));
-		InstructionsTxt.setWrapStyleWord(true);
-		InstructionsTxt.setLineWrap(true);
-		InstructionsTxt.setEditable(false);
-		InstructionsTxt.setText(
-				"Click on a word, then use the up/down arrows to move it. Arrange the words in alphabetical order (A to Z)");
-		InstructionsTxt.setBounds(208, 38, 478, 74);
-		contentPane.add(InstructionsTxt);
+		// Instructions panel
+		JPanel instructionPanel = new JPanel(new BorderLayout());
+		instructionPanel.setBackground(new Color(255, 240, 0));
+		instructionPanel.setBorder(new LineBorder(new Color(0, 140, 70), 4, true));
+		instructionPanel.setBounds(42, 34, 770, 90);
+
+		JLabel instructionLabel = new JLabel(
+				"<html><div style='text-align: center;'>Click on a word, then use the up/down arrows to move it. Arrange the words in <br>alphabetical order (A to Z)</div></html>",
+				JLabel.CENTER);
+		instructionLabel.setFont(new Font("Arial", Font.PLAIN, 20));
+		instructionLabel.setForeground(Color.BLACK);
+		instructionLabel.setBorder(BorderFactory.createEmptyBorder(8, 15, 8, 15));
+
+		instructionPanel.add(instructionLabel, BorderLayout.EAST);
+		Background.add(instructionPanel);
 
 		// Back button
 		JButton BackBtn = new JButton();
@@ -116,7 +116,7 @@ public class Alphabetical extends JFrame {
 		BackBtn.setContentAreaFilled(false);
 		BackBtn.setIcon(new ImageIcon(Alphabetical.class.getResource("/Resources/Images/back.png")));
 		BackBtn.setPressedIcon(new ImageIcon(Alphabetical.class.getResource("/Resources/Images/back-Pressed.png")));
-		BackBtn.setBounds(47, 38, 89, 34);
+		BackBtn.setBounds(47, 137, 89, 34);
 		BackBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				int result = JOptionPane.showConfirmDialog(Alphabetical.this,
@@ -270,17 +270,6 @@ public class Alphabetical extends JFrame {
 		});
 		contentPane.add(SubmitBtn);
 
-		// Undo button (placeholder)
-		JButton UndoBtn = new JButton("Undo");
-		UndoBtn.setVisible(false);
-		UndoBtn.setBounds(498, 93, 89, 23);
-		UndoBtn.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				// TODO: implement undo functionality
-			}
-		});
-		contentPane.add(UndoBtn);
-
 		// Reset button – restores original order
 		JButton ResetBtn = new JButton();
 		ResetBtn.setBorderPainted(false);
@@ -288,7 +277,7 @@ public class Alphabetical extends JFrame {
 		ResetBtn.setContentAreaFilled(false);
 		ResetBtn.setIcon(new ImageIcon(Alphabetical.class.getResource("/Resources/Images/restart.png")));
 		ResetBtn.setPressedIcon(new ImageIcon(Alphabetical.class.getResource("/Resources/Images/restart-pressed.png")));
-		ResetBtn.setBounds(714, 99, 89, 34);
+		ResetBtn.setBounds(721, 137, 89, 34);
 		ResetBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				int result = JOptionPane.showConfirmDialog(Alphabetical.this,
