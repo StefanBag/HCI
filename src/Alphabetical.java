@@ -76,6 +76,7 @@ public class Alphabetical extends JFrame {
 		setResizable(false);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 860, 510);
+		setLocationRelativeTo(null);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
@@ -88,7 +89,7 @@ public class Alphabetical extends JFrame {
 			listedNumbers[i].setText(String.valueOf(i + 1));
 			listedNumbers[i].setEditable(false);
 			listedNumbers[i].setOpaque(false);
-			listedNumbers[i].setFont(new Font("Monospaced", Font.PLAIN, 16));
+			listedNumbers[i].setFont(new Font("Ariel", Font.PLAIN, 16));
 			listedNumbers[i].setForeground(new Color(255, 255, 255));
 			contentPane.add(listedNumbers[i]);
 
@@ -97,7 +98,7 @@ public class Alphabetical extends JFrame {
 		// Instructions
 		JTextArea InstructionsTxt = new JTextArea();
 		InstructionsTxt.setMargin(new Insets(4, 4, 4, 4));
-		InstructionsTxt.setBackground(Color.YELLOW);
+		InstructionsTxt.setBackground(Color.white);
 		InstructionsTxt.setForeground(Color.BLACK);
 		InstructionsTxt.setFont(new Font("Arial", Font.BOLD, 16));
 		InstructionsTxt.setWrapStyleWord(true);
