@@ -20,7 +20,7 @@ public class Input extends JFrame {
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
 
-		// ── Step 1 components
+		// Part 1: User enters how many words they want
 
 		JLabel questionLabel = new JLabel("How many words would you like to enter? (1-20)", SwingConstants.CENTER);
 		questionLabel.setFont(new Font("Comic Sans MS", Font.BOLD | Font.ITALIC, 24));
@@ -31,6 +31,18 @@ public class Input extends JFrame {
 		JSpinner spinner = new JSpinner(spinnerModel);
 		spinner.setFont(new Font("Courier New", Font.BOLD, 22));
 		spinner.setBounds(355, 200, 150, 40);
+
+		// Block non-numeric input in the spinner's text field
+		JSpinner.NumberEditor spinnerEditor = new JSpinner.NumberEditor(spinner, "#");
+		spinner.setEditor(spinnerEditor);
+		spinnerEditor.getTextField().addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyTyped(KeyEvent e) {
+				if (!Character.isDigit(e.getKeyChar())) {
+					e.consume();
+				}
+			}
+		});
 
 		JButton confirmBtn = new JButton();
 		confirmBtn.setIcon(new ImageIcon(Input.class.getResource("/Resources/Images/play.png")));
@@ -44,7 +56,7 @@ public class Input extends JFrame {
 		contentPane.add(spinner);
 		contentPane.add(confirmBtn);
 
-		// ── Step 2 components ──────────────────────────────────────────
+		// Part 2: User inputs words
 
 		JLabel enterWordsLabel = new JLabel("Enter your words below:", SwingConstants.CENTER);
 		enterWordsLabel.setFont(new Font("Comic Sans MS", Font.BOLD | Font.ITALIC, 22));
@@ -83,7 +95,7 @@ public class Input extends JFrame {
 		fieldsPanel.setVisible(false);
 		contentPane.add(fieldsPanel);
 
-		// ── Helpers to show/hide each step ────────────────────────────
+		// Helpers to show Part 1 and 2
 		Runnable showStep1 = () -> {
 			questionLabel.setVisible(true);
 			spinner.setVisible(true);
@@ -104,15 +116,13 @@ public class Input extends JFrame {
 			fieldsPanel.setVisible(true);
 		};
 
-		// ── Confirm button ─────────────────────────────────────────────
+		// Confirm button
 		confirmBtn.addActionListener(e -> {
 			int count = (int) spinner.getValue();
 			words = new String[count];
 
 			fieldsPanel.removeAll();
 
-			// Layout: up to 10 per column, two columns if needed
-			// fieldsPanel is 775 wide, 320 tall — fits inside green board area
 			int rows   = Math.min(count, 10);
 			int fieldH = 24;
 			int fieldW = 290;
@@ -155,8 +165,7 @@ public class Input extends JFrame {
 			fieldsPanel.repaint();
 			showStep2.run();
 
-			// ── Submit action (registered fresh each time) ─────────────
-			// Remove old listeners first
+			// Submit button logic
 			for (ActionListener al : submitBtn.getActionListeners()) {
 				submitBtn.removeActionListener(al);
 			}
@@ -182,10 +191,10 @@ public class Input extends JFrame {
 			});
 		});
 
-		// ── Back button ────────────────────────────────────────────────
+		// Back button
 		backBtn.addActionListener(e -> showStep1.run());
 
-		// ── Background ─────────────────────────────────────────────────
+		// Background
 		JLabel background = new JLabel();
 		background.setIcon(new ImageIcon(Input.class.getResource("/Resources/Images/GreenBoard.jpg")));
 		background.setBounds(0, 0, 844, 471);
