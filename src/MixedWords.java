@@ -4,32 +4,33 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
-import java.awt.GradientPaint;
 import java.awt.Graphics;
-import java.awt.Graphics2D;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.Image;
 import java.awt.Insets;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import javax.swing.ImageIcon;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.SwingUtilities;
 import javax.swing.Timer;
 import javax.swing.border.LineBorder;
 
 public class MixedWords extends JFrame {
 
     private static final long serialVersionUID = 1L;
+
+    private String[] words;
+    private int numWords;
 
     private JPanel contentPane;
     private JPanel lettersPanel;
@@ -41,14 +42,14 @@ public class MixedWords extends JFrame {
     private JButton nextBtn;
     private JLabel scoreLabel;
 
-    private final String[] words = { "bye", "guard", "horse", "sun" };
-    private final int numWords = words.length;
-
     private int currentWordIndex = 0;
     private String currentWord;
     private int score = 0;
 
-    public MixedWords() {
+    public MixedWords(String[] words) {
+        this.words = words;
+        this.numWords = words.length;
+
         setTitle("Mixed Words");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(1200, 750);
@@ -100,7 +101,7 @@ public class MixedWords extends JFrame {
         backBtn.setPreferredSize(new Dimension(140, 55));
 
         backBtn.addActionListener(e -> {
-            MainMenu menu = new MainMenu();
+            MainMenu menu = new MainMenu(words);
             menu.setVisible(true);
             dispose();
         });
@@ -159,7 +160,6 @@ public class MixedWords extends JFrame {
             btn.setVerticalAlignment(JLabel.CENTER);
 
             btn.addActionListener(e -> selectLetter(index));
-
             letterButtons[i] = btn;
         }
 
@@ -328,24 +328,20 @@ public class MixedWords extends JFrame {
     }
 
     private static class BackgroundPanel extends JPanel {
+
+        private Image background;
+
+        public BackgroundPanel() {
+            background = new ImageIcon(
+                MixedWords.class.getResource("/Resources/Images/GreenBoard.jpg")
+            ).getImage();
+            setLayout(new BorderLayout());
+        }
+
         @Override
         protected void paintComponent(Graphics g) {
             super.paintComponent(g);
-
-            Graphics2D g2 = (Graphics2D) g;
-            GradientPaint gp = new GradientPaint(
-                0, 0, new Color(10, 90, 40),
-                0, getHeight(), new Color(0, 60, 25)
-            );
-            g2.setPaint(gp);
-            g2.fillRect(0, 0, getWidth(), getHeight());
+            g.drawImage(background, 0, 0, getWidth(), getHeight(), this);
         }
-    }
-
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> {
-            MixedWords frame = new MixedWords();
-            frame.setVisible(true);
-        });
     }
 }
