@@ -31,11 +31,13 @@ public class MissingLetter extends JFrame {
 	private int correctCount = 0;
 	private String currentWord;
 	private int hiddenIndex;
+	private String[] words;
 
-	public MissingLetter() {
+	
+	public MissingLetter(String[] words) {
+		this.words=words;
 		// Initialize the list of words
-		String[] initialWords = { "APPLE", "BANANA", "CARROT", "DORK", "EVIL", "FORTNITE", "GRASS", "HARP", "IMMUNE", "JAMIE" };
-		Collections.addAll(gameWords, initialWords);
+		Collections.addAll(gameWords, words);
 		totalWords = gameWords.size();
 
 		setTitle("Missing Letter");
@@ -81,7 +83,7 @@ public class MissingLetter extends JFrame {
 						"Your current sorting progress will be lost. Are you sure you want to return to the main menu?",
 						"Exit to Main Menu", JOptionPane.YES_NO_OPTION);
 				if (result == JOptionPane.YES_OPTION) {
-					MainMenu x = new MainMenu();
+					MainMenu x = new MainMenu(words);
 					x.setVisible(true);
 					dispose();
 				}
