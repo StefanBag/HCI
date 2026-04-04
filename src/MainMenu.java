@@ -1,8 +1,14 @@
-import javax.swing.*;
-import javax.swing.border.EmptyBorder;
+import java.awt.Color;
+import java.awt.Cursor;
+import java.awt.Font;
 
-import java.awt.*;
-import java.awt.event.*;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.SwingConstants;
+import javax.swing.border.EmptyBorder;
 
 public class MainMenu extends JFrame {
 
@@ -59,20 +65,23 @@ public class MainMenu extends JFrame {
 		int row1Y = 195;
 		int row2Y = 310;
 
-		// Row 1 — 3 buttons, centered: total width = 3*200 + 2*30 = 660, start x = (860-660)/2 = 100
+		// Row 1 — 3 buttons, centered: total width = 3*200 + 2*30 = 660, start x =
+		// (860-660)/2 = 100
 		int row1StartX = (860 - (3 * btnW + 2 * gapX)) / 2;
 
-		// Row 2 — 2 buttons, centered: total width = 2*200 + 1*30 = 430, start x = (860-430)/2 = 215
+		// Row 2 — 2 buttons, centered: total width = 2*200 + 1*30 = 430, start x =
+		// (860-430)/2 = 215
 		int row2StartX = (860 - (2 * btnW + gapX)) / 2;
 
-		String[] activityNames  = { "Alphabetical", "Word Search", "Wordle", "Missing Letter", "Mixed Words" };
-		String[] imageNames     = { "Alphabetical", "WordSearch", "Wordle", "MissingLetter", "MixedWords" };
+		String[] activityNames = { "Alphabetical", "Word Search", "Wordle", "Missing Letter", "Mixed Words" };
+		String[] imageNames = { "Alphabetical", "WordSearch", "Wordle", "MissingLetter", "MixedWords" };
 
 		for (int i = 0; i < 5; i++) {
 			final int index = i;
 			JButton btn = new JButton();
 			btn.setIcon(new ImageIcon(MainMenu.class.getResource("/Resources/Images/" + imageNames[i] + ".png")));
-			btn.setPressedIcon(new ImageIcon(MainMenu.class.getResource("/Resources/Images/" + imageNames[i] + "-Pressed.png")));
+			btn.setPressedIcon(
+					new ImageIcon(MainMenu.class.getResource("/Resources/Images/" + imageNames[i] + "-Pressed.png")));
 			btn.setOpaque(false);
 			btn.setContentAreaFilled(false);
 			btn.setBorderPainted(false);
@@ -90,31 +99,31 @@ public class MainMenu extends JFrame {
 
 			btn.addActionListener(e -> {
 				switch (index) {
-					case 0: // Alphabetical
-						Alphabetical a = new Alphabetical();
-						a.setVisible(true);
-						dispose();
-						break;
-					case 1: // Word Search
-						WordSearch ws = new WordSearch();
-						ws.setVisible(true);
-						dispose();						
-						break;
-					case 2: // Wordle
-						Wordle w = new Wordle();
-						w.setVisible(true);
-						dispose();					
-						break;
-					case 3: // Missing Letter
-						MissingLetter ml = new MissingLetter();
-						ml.setVisible(true);
-						dispose();					
-						break;
-					case 4: // Mixed Words
-						MixedWords mw = new MixedWords();
-						mw.setVisible(true);
-						dispose();
-						break;
+				case 0: // Alphabetical
+					Alphabetical a = new Alphabetical(words);
+					a.setVisible(true);
+					dispose();
+					break;
+				case 1: // Word Search
+					WordSearch ws = new WordSearch();
+					ws.setVisible(true);
+					dispose();
+					break;
+				case 2: // Wordle
+					Wordle w = new Wordle();
+					w.setVisible(true);
+					dispose();
+					break;
+				case 3: // Missing Letter
+					MissingLetter ml = new MissingLetter();
+					ml.setVisible(true);
+					dispose();
+					break;
+				case 4: // Mixed Words
+					MixedWords mw = new MixedWords();
+					mw.setVisible(true);
+					dispose();
+					break;
 				}
 			});
 
