@@ -7,7 +7,7 @@ public class WordSearch extends JFrame {
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
 
-	public WordSearch() {
+	public WordSearch(String[] words) {
 		setTitle("Word Search");
 		setResizable(false);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

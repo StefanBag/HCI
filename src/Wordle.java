@@ -28,12 +28,12 @@ public class Wordle extends JFrame {
 
 	private static final long serialVersionUID = 1L;
 
-	/** EDIT: 5-letter words only. */
+	/** 5-letter words only. */
 	private static final String[] WORD_BANK_5 = { "CRANE", "PLANT", "HOUSE", "GRAPE", "LIGHT", "BRAIN", "CHAIR",
 			"STORM", "APPLE", "BEACH", "DANCE", "EARTH", "FLAME", "GHOST", "HEART", "IMAGE", "JOKER", "KNIFE", "LEMON",
 			"MUSIC" };
 
-	/** EDIT: 6-letter words only (Hard difficulty). */
+	/** 6-letter words only (Hard difficulty). */
 	private static final String[] WORD_BANK_6 = { "CRANES", "PLANTS", "BRIGHT", "DOCTOR", "SIMPLE", "MOTHER", "FATHER",
 			"SCHOOL", "GARDEN", "LETTER", "NATURE", "POCKET", "RUBBER", "SIGNAL", "TICKET", "WINDOW", "YELLOW", "ABSORB",
 			"BRIDGE", "CAMERA" };
@@ -70,8 +70,10 @@ public class Wordle extends JFrame {
 	private int currentRow;
 	private boolean gameOver;
 	private final JLabel Background = new JLabel("");
+	private String[] words;
 
-	public Wordle() {
+	public Wordle(String[] words) {
+		this.words = words;
 		currentRow = 0;
 		gameOver = false;
 
@@ -108,7 +110,7 @@ public class Wordle extends JFrame {
 						"Your current game progress will be lost. Are you sure you want to return to the main menu?",
 						"Exit to Main Menu", JOptionPane.YES_NO_OPTION);
 				if (result == JOptionPane.YES_OPTION) {
-					MainMenu x = new MainMenu();
+					MainMenu x = new MainMenu(words);
 					x.setVisible(true);
 					dispose();
 				}
@@ -142,6 +144,17 @@ public class Wordle extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				int newCols = easyRadio.isSelected() ? 5 : 6;
 				if (newCols != cols) {
+					if (currentRow > 0 && !gameOver) {
+						int result = JOptionPane.showConfirmDialog(Wordle.this,
+								"Your current game progress will be lost. Are you sure you want to change difficulty?",
+								"Change Difficulty", JOptionPane.YES_NO_OPTION);
+						if (result != JOptionPane.YES_OPTION) {
+							// Revert the radio button selection
+							if (cols == 5) easyRadio.setSelected(true);
+							else hardRadio.setSelected(true);
+							return;
+						}
+					}
 					cols = newCols;
 					onDifficultyChanged();
 				}
@@ -197,6 +210,12 @@ public class Wordle extends JFrame {
 		newGameBtn.setBorderPainted(false);
 		newGameBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				if (currentRow > 0 && !gameOver) {
+					int result = JOptionPane.showConfirmDialog(Wordle.this,
+							"Your current game progress will be lost. Are you sure you want to restart?",
+							"Restart Game", JOptionPane.YES_NO_OPTION);
+					if (result != JOptionPane.YES_OPTION) return;
+				}
 				resetGame();
 			}
 		});
@@ -300,8 +319,24 @@ public class Wordle extends JFrame {
 	}
 
 	private void pickNewSecretWord() {
-		String[] bank = cols == 5 ? WORD_BANK_5 : WORD_BANK_6;
-		secretWord = bank[rng.nextInt(bank.length)];
+		String[] defaultBank = cols == 5 ? WORD_BANK_5 : WORD_BANK_6;
+
+		// Collect user-inputted words that match the current difficulty length
+		java.util.List<String> userMatches = new java.util.ArrayList<>();
+		if (words != null) {
+			for (String w : words) {
+				if (w != null && w.trim().length() == cols) {
+					userMatches.add(w.trim().toUpperCase());
+				}
+			}
+		}
+
+		// Build pool: user matches added 3x for higher priority, then default bank
+		java.util.List<String> pool = new java.util.ArrayList<>();
+		for (int i = 0; i < 3; i++) pool.addAll(userMatches);
+		for (String w : defaultBank) pool.add(w);
+
+		secretWord = pool.get(rng.nextInt(pool.size()));
 	}
 
 	private void resetGame() {
