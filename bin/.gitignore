@@ -4,5 +4,6 @@
 # Build output
 /bin/
 /.classpath
+/.gitignore
 /.project
 /Resources/
