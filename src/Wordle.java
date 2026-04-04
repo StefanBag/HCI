@@ -41,9 +41,9 @@ public class Wordle extends JFrame {
 	private static final int ROWS = 6;
 	/** Max columns in the grid (Hard uses all 6; Easy hides the last column). */
 	private static final int MAX_COLS = 6;
-	private static final int TILE = 40;
+	private static final int TILE = 35;
 	private static final int GAP = 5;
-	private static final int GRID_TOP = 178;
+	private static final int GRID_TOP = 133;
 
 	private static final Color TILE_EMPTY_BG = Color.WHITE;
 	private static final Color TILE_TEXT = Color.BLACK;
@@ -80,7 +80,8 @@ public class Wordle extends JFrame {
 		setTitle("Wordle");
 		setResizable(false);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 860, 620);
+		setBounds(100, 100, 860, 510);
+		setLocationRelativeTo(null);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
@@ -94,7 +95,7 @@ public class Wordle extends JFrame {
 		instructionsTxt.setWrapStyleWord(true);
 		instructionsTxt.setLineWrap(true);
 		instructionsTxt.setEditable(false);
-		instructionsTxt.setBounds(165, 84, 600, 60);
+		instructionsTxt.setBounds(165, 39, 600, 60);
 		contentPane.add(instructionsTxt);
 
 		JButton BackBtn = new JButton();
@@ -103,7 +104,7 @@ public class Wordle extends JFrame {
 		BackBtn.setContentAreaFilled(false);
 		BackBtn.setIcon(new ImageIcon(Wordle.class.getResource("/Resources/Images/back.png")));
 		BackBtn.setPressedIcon(new ImageIcon(Wordle.class.getResource("/Resources/Images/back-Pressed.png")));
-		BackBtn.setBounds(60, 84, 89, 34);
+		BackBtn.setBounds(60, 39, 89, 34);
 		BackBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				int result = JOptionPane.showConfirmDialog(Wordle.this,
@@ -123,15 +124,15 @@ public class Wordle extends JFrame {
 		diffLabel.setOpaque(true);
 		diffLabel.setBackground(Color.YELLOW);
 		diffLabel.setForeground(Color.BLACK);
-		diffLabel.setBounds(165, 148, 80, 26);
+		diffLabel.setBounds(165, 103, 80, 26);
 		contentPane.add(diffLabel);
 
 		easyRadio = new JRadioButton("Easy (5 letters)", true);
-		easyRadio.setBounds(245, 148, 130, 26);
+		easyRadio.setBounds(245, 103, 130, 26);
 		easyRadio.setOpaque(true);
 		easyRadio.setBackground(Color.YELLOW);
 		hardRadio = new JRadioButton("Hard (6 letters)");
-		hardRadio.setBounds(375, 148, 150, 26);
+		hardRadio.setBounds(375, 103, 150, 26);
 		hardRadio.setOpaque(true);
 		hardRadio.setBackground(Color.YELLOW);
 		ButtonGroup diffGroup = new ButtonGroup();
@@ -228,8 +229,8 @@ public class Wordle extends JFrame {
 		syncGuessToGrid();
 
 		Image boardImg = new ImageIcon(Wordle.class.getResource("/Resources/Images/GreenBoard.jpg")).getImage();
-		Background.setIcon(new ImageIcon(boardImg.getScaledInstance(844, 581, Image.SCALE_SMOOTH)));
-		Background.setBounds(0, 0, 844, 581);
+		Background.setIcon(new ImageIcon(boardImg.getScaledInstance(844, 471, Image.SCALE_SMOOTH)));
+		Background.setBounds(0, 0, 844, 471);
 		contentPane.add(Background);
 	}
 

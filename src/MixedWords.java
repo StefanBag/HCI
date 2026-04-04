@@ -51,13 +51,14 @@ public class MixedWords extends JFrame {
         this.numWords = words.length;
 
         setTitle("Mixed Words");
+        setResizable(false);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setSize(1200, 750);
-        setLocationRelativeTo((Component) null);
+        setBounds(100, 100, 860, 510);
+        setLocationRelativeTo(null);
 
         contentPane = new BackgroundPanel();
         contentPane.setLayout(new BorderLayout());
-        contentPane.setBorder(BorderFactory.createEmptyBorder(55, 75, 65, 75));
+        contentPane.setBorder(BorderFactory.createEmptyBorder(25, 30, 25, 30));
         setContentPane(contentPane);
 
         buildUI();
@@ -71,17 +72,17 @@ public class MixedWords extends JFrame {
 
         JPanel instructionPanel = new JPanel(new BorderLayout());
         instructionPanel.setBackground(new Color(255, 240, 0));
-        instructionPanel.setBorder(new LineBorder(new Color(0, 140, 70), 6, true));
-        instructionPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 200));
-        instructionPanel.setPreferredSize(new Dimension(1000, 200));
+        instructionPanel.setBorder(new LineBorder(new Color(0, 140, 70), 4, true));
+        instructionPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 90));
+        instructionPanel.setPreferredSize(new Dimension(760, 90));
 
         JLabel instructionLabel = new JLabel(
-            "<html><div style='text-align: center;'>Click a letter then arrow to move a letter.<br>Rearrange the letters to spell a word.</div></html>",
+            "<html><div style='text-align: center;'>Click a letter, then use the arrows to move it.<br>Rearrange the letters to spell the word.</div></html>",
             JLabel.CENTER
         );
-        instructionLabel.setFont(new Font("Comic Sans MS", Font.BOLD, 48));
+        instructionLabel.setFont(new Font("Comic Sans MS", Font.BOLD, 20));
         instructionLabel.setForeground(Color.BLACK);
-        instructionLabel.setBorder(BorderFactory.createEmptyBorder(20, 30, 20, 30));
+        instructionLabel.setBorder(BorderFactory.createEmptyBorder(8, 15, 8, 15));
         instructionPanel.add(instructionLabel, BorderLayout.CENTER);
 
         JPanel topPanel = new JPanel(new GridBagLayout());
@@ -98,16 +99,25 @@ public class MixedWords extends JFrame {
         backBtn.setContentAreaFilled(false);
         backBtn.setFocusPainted(false);
         backBtn.setOpaque(false);
-        backBtn.setPreferredSize(new Dimension(140, 55));
+        backBtn.setPreferredSize(new Dimension(89, 34));
 
         backBtn.addActionListener(e -> {
-            MainMenu menu = new MainMenu(words);
-            menu.setVisible(true);
-            dispose();
+            int result = JOptionPane.showConfirmDialog(
+                MixedWords.this,
+                "Your current sorting progress will be lost. Are you sure you want to return to the main menu?",
+                "Exit to Main Menu",
+                JOptionPane.YES_NO_OPTION
+            );
+
+            if (result == JOptionPane.YES_OPTION) {
+                MainMenu menu = new MainMenu(words);
+                menu.setVisible(true);
+                dispose();
+            }
         });
 
         scoreLabel = new JLabel("Score: 0 out of " + numWords, JLabel.CENTER);
-        scoreLabel.setFont(new Font("Arial", Font.BOLD, 68));
+        scoreLabel.setFont(new Font("Arial", Font.BOLD, 28));
         scoreLabel.setForeground(Color.YELLOW);
 
         gbc.gridx = 0;
@@ -126,7 +136,7 @@ public class MixedWords extends JFrame {
         topPanel.add(rightSpacer, gbc);
 
         topContainer.add(instructionPanel);
-        topContainer.add(Box.createVerticalStrut(10));
+        topContainer.add(Box.createVerticalStrut(8));
         topContainer.add(topPanel);
 
         contentPane.add(topContainer, BorderLayout.NORTH);
@@ -138,9 +148,9 @@ public class MixedWords extends JFrame {
         middleStack.setOpaque(false);
         middleStack.setLayout(new BoxLayout(middleStack, BoxLayout.Y_AXIS));
 
-        lettersPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 14, 0));
+        lettersPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 0));
         lettersPanel.setOpaque(false);
-        lettersPanel.setPreferredSize(new Dimension(950, 150));
+        lettersPanel.setPreferredSize(new Dimension(760, 90));
         lettersPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
 
         letterButtons = new JButton[10];
@@ -148,14 +158,14 @@ public class MixedWords extends JFrame {
             final int index = i;
 
             JButton btn = new JButton("");
-            btn.setFont(new Font("Arial", Font.BOLD, 44));
+            btn.setFont(new Font("Arial", Font.BOLD, 24));
             btn.setMargin(new Insets(0, 0, 0, 0));
             btn.setOpaque(true);
             btn.setContentAreaFilled(true);
             btn.setBorderPainted(false);
             btn.setFocusPainted(false);
             btn.setBackground(Color.WHITE);
-            btn.setPreferredSize(new Dimension(120, 120));
+            btn.setPreferredSize(new Dimension(65, 65));
             btn.setHorizontalAlignment(JLabel.CENTER);
             btn.setVerticalAlignment(JLabel.CENTER);
 
@@ -163,31 +173,32 @@ public class MixedWords extends JFrame {
             letterButtons[i] = btn;
         }
 
-        JPanel bottomPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 25, 5));
+        JPanel bottomPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 15, 5));
         bottomPanel.setOpaque(false);
         bottomPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
 
         leftArrow = new JButton("<");
-        leftArrow.setFont(new Font("Arial", Font.BOLD, 48));
-        leftArrow.setPreferredSize(new Dimension(140, 90));
+        leftArrow.setFont(new Font("Arial", Font.BOLD, 26));
+        leftArrow.setPreferredSize(new Dimension(80, 50));
         styleButton(leftArrow);
 
         rightArrow = new JButton(">");
-        rightArrow.setFont(new Font("Arial", Font.BOLD, 48));
-        rightArrow.setPreferredSize(new Dimension(140, 90));
+        rightArrow.setFont(new Font("Arial", Font.BOLD, 26));
+        rightArrow.setPreferredSize(new Dimension(80, 50));
         styleButton(rightArrow);
 
         nextBtn = new JButton("NEXT WORD");
-        nextBtn.setFont(new Font("Arial", Font.BOLD, 36));
-        nextBtn.setPreferredSize(new Dimension(320, 90));
+        nextBtn.setFont(new Font("Arial", Font.BOLD, 20));
+        nextBtn.setPreferredSize(new Dimension(180, 50));
         styleButton(nextBtn);
 
         bottomPanel.add(leftArrow);
         bottomPanel.add(rightArrow);
         bottomPanel.add(nextBtn);
 
+        middleStack.add(Box.createVerticalStrut(10));
         middleStack.add(lettersPanel);
-        middleStack.add(Box.createVerticalStrut(12));
+        middleStack.add(Box.createVerticalStrut(10));
         middleStack.add(bottomPanel);
 
         centerPanel.add(middleStack);
@@ -280,7 +291,7 @@ public class MixedWords extends JFrame {
     private void flashArrow(JButton arrow) {
         arrow.setBackground(Color.YELLOW);
 
-        Timer timer = new Timer(500, e -> arrow.setBackground(Color.WHITE));
+        Timer timer = new Timer(300, e -> arrow.setBackground(Color.WHITE));
         timer.setRepeats(false);
         timer.start();
     }
@@ -310,7 +321,7 @@ public class MixedWords extends JFrame {
             nextBtn.setBackground(Color.RED);
         }
 
-        Timer timer = new Timer(1000, e -> nextBtn.setBackground(Color.WHITE));
+        Timer timer = new Timer(700, e -> nextBtn.setBackground(Color.WHITE));
         timer.setRepeats(false);
         timer.start();
 
@@ -318,7 +329,13 @@ public class MixedWords extends JFrame {
 
         currentWordIndex++;
         if (currentWordIndex >= words.length) {
-            JOptionPane.showMessageDialog(this, "Done! Final Score: " + score + " out of " + numWords);
+            JOptionPane.showMessageDialog(
+                this,
+                "Game over! Final Score: " + score + " out of " + numWords + "\nThe game will now reset.",
+                "Game Complete",
+                JOptionPane.INFORMATION_MESSAGE
+            );
+
             currentWordIndex = 0;
             score = 0;
             scoreLabel.setText("Score: " + score + " out of " + numWords);
