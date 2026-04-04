@@ -33,12 +33,12 @@ public class Input extends JFrame {
 		spinner.setBounds(355, 200, 150, 40);
 
 		JButton confirmBtn = new JButton();
-		confirmBtn.setIcon(new ImageIcon(Input.class.getResource("/Resources/Images/submitbutton2.png")));
-		confirmBtn.setPressedIcon(new ImageIcon(Input.class.getResource("/Resources/Images/submitbutton-pressed2.png")));
+		confirmBtn.setIcon(new ImageIcon(Input.class.getResource("/Resources/Images/play.png")));
+		confirmBtn.setPressedIcon(new ImageIcon(Input.class.getResource("/Resources/Images/play-pressed.png")));
 		confirmBtn.setOpaque(false);
 		confirmBtn.setContentAreaFilled(false);
 		confirmBtn.setBorderPainted(false);
-		confirmBtn.setBounds(350, 280, 160, 69);
+		confirmBtn.setBounds(345, 280, 160, 69);
 
 		contentPane.add(questionLabel);
 		contentPane.add(spinner);
@@ -71,7 +71,7 @@ public class Input extends JFrame {
 		submitBtn.setOpaque(false);
 		submitBtn.setContentAreaFilled(false);
 		submitBtn.setBorderPainted(false);
-		submitBtn.setBounds(345, 390, 160, 40);
+		submitBtn.setBounds(345, 400, 160, 40);
 		submitBtn.setVisible(false);
 		contentPane.add(submitBtn);
 
@@ -143,6 +143,8 @@ public class Input extends JFrame {
 					public void keyTyped(KeyEvent e) {
 						if (!Character.isLetter(e.getKeyChar())) {
 							e.consume();
+						} else if (fields[fi].getText().length() >= 20) {
+							e.consume();
 						}
 					}
 				});
@@ -173,9 +175,8 @@ public class Input extends JFrame {
 							"Please fill in all word fields before submitting.",
 							"Missing Words", JOptionPane.WARNING_MESSAGE);
 				} else {
-					JOptionPane.showMessageDialog(Input.this,count + " words saved successfully!","Words Saved", JOptionPane.INFORMATION_MESSAGE);
-					MainMenu x = new MainMenu(words);
-					x.setVisible(true);
+					MainMenu m = new MainMenu(words);
+					m.setVisible(true);
 					dispose();
 				}
 			});
