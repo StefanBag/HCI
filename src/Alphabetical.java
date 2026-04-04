@@ -35,10 +35,11 @@ public class Alphabetical extends JFrame {
 	// Sorted list for reference (case-insensitive alphabetical order)
 	List<String> SortedList = new ArrayList<>();
 
-	String words[] = { "apple", "banana", "carrot", "dork", "evil", "fortnite", "grass", "harp", "immune", "jamie",
-			"hello", "dog", "meow", "zebra", "orange", "pencil", "keyboard", "monitor", "bottle", "window", "rocket",
-			"island", "shadow", "thunder" };
+//	String words[] = { "apple", "banana", "carrot", "dork", "evil", "fortnite", "grass", "harp", "immune", "jamie",
+//			"hello", "dog", "meow", "zebra", "orange", "pencil", "keyboard", "monitor", "bottle", "window", "rocket",
+//			"island", "shadow", "thunder" };
 
+	private String[] words;
 	// Two JLists that display portions of the master model
 	private JList<String> leftList;
 	private JList<String> rightList;
@@ -60,7 +61,8 @@ public class Alphabetical extends JFrame {
 
 	private JTextArea[] listedNumbers;
 
-	public Alphabetical() {
+	public Alphabetical(String[] words) {
+		this.words = words;
 		// Populate master model and sorted list
 		for (String word : words) {
 			listModel.addElement(word);
@@ -120,7 +122,7 @@ public class Alphabetical extends JFrame {
 						"Your current sorting progress will be lost. Are you sure you want to return to the main menu?",
 						"Exit to Main Menu", JOptionPane.YES_NO_OPTION);
 				if (result == JOptionPane.YES_OPTION) {
-					MainMenu x = new MainMenu();
+					MainMenu x = new MainMenu(words);
 					x.setVisible(true);
 					dispose();
 				}
