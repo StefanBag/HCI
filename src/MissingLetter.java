@@ -52,6 +52,7 @@ public class MissingLetter extends JFrame {
 		JLabel Background = new JLabel("");
 		Background.setIcon(new ImageIcon(MissingLetter.class.getResource("/Resources/Images/GreenBoard.jpg")));
 		Background.setBounds(0, 0, 844, 471);
+		Background.setLayout(null);
 		contentPane.add(Background);
 
 		// Instructions
@@ -65,24 +66,35 @@ public class MissingLetter extends JFrame {
 		InstructionsTxt.setBounds(319, 24, 515, 64);
 		Background.add(InstructionsTxt);
 
-		// Back Button
-		JButton BackBtn = new JButton("BACK");
-		BackBtn.setBounds(37, 29, 89, 23);
+		
+		// Back button
+		JButton BackBtn = new JButton();
+		BackBtn.setBorderPainted(false);
+		BackBtn.setOpaque(false);
+		BackBtn.setContentAreaFilled(false);
+		BackBtn.setIcon(new ImageIcon(MissingLetter.class.getResource("/Resources/Images/back.png")));
+		BackBtn.setPressedIcon(new ImageIcon(MissingLetter.class.getResource("/Resources/Images/back-Pressed.png")));
+		BackBtn.setBounds(47, 38, 89, 34);
 		BackBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				// Return to MainMenu
-				MainMenu x = new MainMenu(); 
-				x.setVisible(true);
-				dispose();
+				int result = JOptionPane.showConfirmDialog(MissingLetter.this,
+						"Your current sorting progress will be lost. Are you sure you want to return to the main menu?",
+						"Exit to Main Menu", JOptionPane.YES_NO_OPTION);
+				if (result == JOptionPane.YES_OPTION) {
+					MainMenu x = new MainMenu();
+					x.setVisible(true);
+					dispose();
+				}
 			}
 		});
 		Background.add(BackBtn);
+
 		
 		// Progress Counter Label
-		lblCounter = new JLabel("0 / " + totalWords);
+		lblCounter = new JLabel("0/10 words");
 		lblCounter.setForeground(Color.WHITE);
 		lblCounter.setFont(new Font("Arial", Font.BOLD, 24));
-		lblCounter.setBounds(37, 80, 150, 30);
+		lblCounter.setBounds(42, 80, 180, 30);
 		Background.add(lblCounter);
 		
 		// Container for the word slots
@@ -101,9 +113,15 @@ public class MissingLetter extends JFrame {
 		inputField.setColumns(10);
 		
 		// Submit Button
-		JButton btnSubmit = new JButton("SUBMIT");
-		btnSubmit.setFont(new Font("Tahoma", Font.BOLD, 14));
-		btnSubmit.setBounds(370, 360, 100, 40);
+		JButton btnSubmit = new JButton();
+		btnSubmit.setIcon(new ImageIcon(MissingLetter.class.getResource("/Resources/Images/submitbutton.png")));
+		btnSubmit.setPressedIcon(
+				new ImageIcon(MissingLetter.class.getResource("/Resources/Images/submitbutton-pressed.png")));
+		btnSubmit.setOpaque(false);
+		btnSubmit.setContentAreaFilled(false);
+		btnSubmit.setBorderPainted(false);
+		btnSubmit.setToolTipText("Submit your answer");
+		btnSubmit.setBounds(370, 360, 89, 34);
 		btnSubmit.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				checkAnswer();
@@ -118,18 +136,19 @@ public class MissingLetter extends JFrame {
 	// Logic to pick the next word and display it
 	public void nextRound() {
 		if (gameWords.isEmpty()) {
-			JOptionPane.showMessageDialog(this, "YOU WIN! Click BACK to return.");
-			inputField.setEnabled(false);
+			JOptionPane.showMessageDialog(this,
+					"Congratulations! You beat the game.\nThe game will now be reset.\nIf you wish to leave, click the BACK button.");
+			resetGame();
 			return;
 		}
 
 		// Take the first word from the list
 		currentWord = gameWords.get(0).toUpperCase();
-		
+
 		// Pick a random index to hide
 		Random rand = new Random();
 		hiddenIndex = rand.nextInt(currentWord.length());
-		
+
 		generateWordSlots(wordPanel, currentWord, hiddenIndex);
 		inputField.setText("");
 		inputField.requestFocus();
@@ -138,20 +157,31 @@ public class MissingLetter extends JFrame {
 	// Logic to check if the user is correct
 	private void checkAnswer() {
 		String userGuess = inputField.getText().trim().toUpperCase();
+
+		if (userGuess.isEmpty()) {
+			JOptionPane.showMessageDialog(this, "Empty field. You need to enter a letter.");
+			return;
+		}
+
+		if (userGuess.length() != 1 || !Character.isLetter(userGuess.charAt(0))) {
+			JOptionPane.showMessageDialog(this, "Please enter one single letter.");
+			return;
+		}
+
 		char correctLetter = currentWord.charAt(hiddenIndex);
-		
-		if (userGuess.length() == 1 && userGuess.charAt(0) == correctLetter) {
+
+		if (userGuess.charAt(0) == correctLetter) {
 			JOptionPane.showMessageDialog(this, "CORRECT!");
 			gameWords.remove(0); // Remove from list since they got it right
 			correctCount++;
-			lblCounter.setText(correctCount + " / " + totalWords);
+			lblCounter.setText(correctCount + "/10 words");
 		} else {
-			JOptionPane.showMessageDialog(this, "INCORRECT! The word was: " + currentWord);
+			JOptionPane.showMessageDialog(this, "INCORRECT!");
 			// Move the word to the back of the list
 			String failedWord = gameWords.remove(0);
 			gameWords.add(failedWord);
 		}
-		
+
 		nextRound();
 	}
 	
@@ -183,5 +213,25 @@ public class MissingLetter extends JFrame {
 	    
 	    container.revalidate();
 	    container.repaint();
+	}
+	
+	// Reset the game back to the start
+	private void resetGame() {
+		gameWords.clear();
+
+		String[] initialWords = { "APPLE", "BANANA", "CARROT", "DORK", "EVIL", "FORTNITE", "GRASS", "HARP", "IMMUNE", "JAMIE" };
+		Collections.addAll(gameWords, initialWords);
+
+		totalWords = gameWords.size();
+		correctCount = 0;
+		currentWord = null;
+		hiddenIndex = -1;
+
+		lblCounter.setText("0/10 words");
+		inputField.setText("");
+		inputField.setEnabled(true);
+		inputField.requestFocus();
+
+		nextRound();
 	}
 }
