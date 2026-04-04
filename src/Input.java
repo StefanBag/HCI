@@ -20,7 +20,7 @@ public class Input extends JFrame {
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
 
-		// ── Step 1 components ──────────────────────────────────────────
+		// ── Step 1 components
 
 		JLabel questionLabel = new JLabel("How many words would you like to enter? (1-20)", SwingConstants.CENTER);
 		questionLabel.setFont(new Font("Comic Sans MS", Font.BOLD | Font.ITALIC, 24));
@@ -75,7 +75,7 @@ public class Input extends JFrame {
 		submitBtn.setVisible(false);
 		contentPane.add(submitBtn);
 
-		// Panel that holds word fields — fits inside the green chalkboard area
+		// Panel that holds word fields
 		JPanel fieldsPanel = new JPanel();
 		fieldsPanel.setLayout(null);
 		fieldsPanel.setOpaque(false);

@@ -51,18 +51,17 @@ public class MainMenu extends JFrame {
 		});
 		contentPane.add(backBtn);
 
-		// ── Activity buttons ───────────────────────────────────────────
-		// 5 buttons arranged in a grid: 3 on top row, 2 on bottom row, centered
+		// Activity Buttons
 		int btnW = 200;
 		int btnH = 70;
 		int gapX = 30;
 		int row1Y = 195;
 		int row2Y = 310;
 
-		// Row 1 — 3 buttons, centered: total width = 3*200 + 2*30 = 660, start x = (860-660)/2 = 100
+		// Row 1 buttons
 		int row1StartX = (860 - (3 * btnW + 2 * gapX)) / 2;
 
-		// Row 2 — 2 buttons, centered: total width = 2*200 + 1*30 = 430, start x = (860-430)/2 = 215
+		// Row 2 buttons
 		int row2StartX = (860 - (2 * btnW + gapX)) / 2;
 
 		String[] activityNames  = { "Alphabetical", "Word Search", "Wordle", "Missing Letter", "Mixed Words" };
@@ -121,7 +120,7 @@ public class MainMenu extends JFrame {
 			contentPane.add(btn);
 		}
 
-		// Background — added last so it stays behind everything
+		// Background
 		JLabel background = new JLabel();
 		background.setIcon(new ImageIcon(MainMenu.class.getResource("/Resources/Images/GreenBoard.jpg")));
 		background.setBounds(0, 0, 844, 471);
