@@ -99,7 +99,7 @@ public class MixedWords extends JFrame {
         instructionPanel.add(instructionLabel, BorderLayout.CENTER);
         instructionWrapper.add(instructionPanel, BorderLayout.CENTER);
 
-        // Top panel (back + score)
+        // Top panel (back + score + restart)
         JPanel topPanel = new JPanel(new GridBagLayout());
         topPanel.setOpaque(false);
 
@@ -107,6 +107,7 @@ public class MixedWords extends JFrame {
         gbc.gridy = 0;
         gbc.fill = GridBagConstraints.HORIZONTAL;
 
+        // Back button (left)
         JButton backBtn = new JButton();
         backBtn.setIcon(new ImageIcon(MixedWords.class.getResource("/Resources/Images/back.png")));
         backBtn.setPressedIcon(new ImageIcon(MixedWords.class.getResource("/Resources/Images/back-Pressed.png")));
@@ -130,9 +131,36 @@ public class MixedWords extends JFrame {
             }
         });
 
+        // Score label (center)
         scoreLabel = new JLabel("Score: 0 out of " + numWords, JLabel.CENTER);
         scoreLabel.setFont(new Font("Arial", Font.BOLD, 30));
         scoreLabel.setForeground(Color.YELLOW);
+
+        // Restart button (right)
+        JButton restartBtn = new JButton();
+        restartBtn.setIcon(new ImageIcon(MixedWords.class.getResource("/Resources/Images/restart.png")));
+        restartBtn.setPressedIcon(new ImageIcon(MixedWords.class.getResource("/Resources/Images/restart-pressed.png")));
+        restartBtn.setBorderPainted(false);
+        restartBtn.setContentAreaFilled(false);
+        restartBtn.setFocusPainted(false);
+        restartBtn.setOpaque(false);
+        restartBtn.setPreferredSize(new Dimension(89, 34));
+
+        restartBtn.addActionListener(e -> {
+            int result = JOptionPane.showConfirmDialog(
+                MixedWords.this,
+                "Restart the game? Your progress will be lost.",
+                "Restart",
+                JOptionPane.YES_NO_OPTION
+            );
+
+            if (result == JOptionPane.YES_OPTION) {
+                currentWordIndex = 0;
+                score = 0;
+                scoreLabel.setText("Score: 0 out of " + numWords);
+                loadWord();
+            }
+        });
 
         gbc.gridx = 0;
         gbc.weightx = 0;
@@ -144,13 +172,10 @@ public class MixedWords extends JFrame {
         gbc.insets = new Insets(0, 0, 0, 0);
         topPanel.add(scoreLabel, gbc);
 
-        // Invisible placeholder to balance the back button and truly center the score
-        JPanel placeholder = new JPanel();
-        placeholder.setOpaque(false);
-        placeholder.setPreferredSize(new Dimension(89, 34));
         gbc.gridx = 2;
         gbc.weightx = 0;
-        topPanel.add(placeholder, gbc);
+        gbc.insets = new Insets(0, 0, 0, 10);
+        topPanel.add(restartBtn, gbc);
 
         topContainer.add(instructionWrapper);
         topContainer.add(Box.createVerticalStrut(10));
@@ -178,7 +203,7 @@ public class MixedWords extends JFrame {
             btn.setFont(new Font("Arial", Font.BOLD, 30));
             btn.setPreferredSize(new Dimension(65, 65));
             btn.setBackground(Color.WHITE);
-            // These three lines are required on macOS for setBackground() to actually work
+            // Required on macOS for setBackground() to actually work
             btn.setOpaque(true);
             btn.setBorderPainted(false);
             btn.setContentAreaFilled(true);
