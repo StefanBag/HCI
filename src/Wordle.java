@@ -1,13 +1,14 @@
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Image;
-import java.awt.Insets;
 import java.awt.KeyboardFocusManager;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.util.Random;
 
+import javax.swing.BorderFactory;
 import javax.swing.ButtonGroup;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -16,7 +17,6 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
-import javax.swing.JTextArea;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
@@ -41,9 +41,9 @@ public class Wordle extends JFrame {
 	private static final int ROWS = 6;
 	/** Max columns in the grid (Hard uses all 6; Easy hides the last column). */
 	private static final int MAX_COLS = 6;
-	private static final int TILE = 35;
+	private static final int TILE = 32;
 	private static final int GAP = 5;
-	private static final int GRID_TOP = 133;
+	private static final int GRID_TOP = 154;
 
 	private static final Color TILE_EMPTY_BG = Color.WHITE;
 	private static final Color TILE_TEXT = Color.BLACK;
@@ -54,7 +54,8 @@ public class Wordle extends JFrame {
 	private JPanel contentPane;
 	private final JLabel[][] tileLabels = new JLabel[ROWS][MAX_COLS];
 	private JLabel statusLabel;
-	private JTextArea instructionsTxt;
+	private JLabel instructionLabel;
+	private JPanel instructionPanel;
 	private JLabel typingHintLabel;
 	private JButton submitBtn;
 	private JButton newGameBtn;
@@ -87,16 +88,17 @@ public class Wordle extends JFrame {
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
 
-		instructionsTxt = new JTextArea();
-		instructionsTxt.setMargin(new Insets(4, 4, 4, 4));
-		instructionsTxt.setBackground(Color.YELLOW);
-		instructionsTxt.setForeground(Color.BLACK);
-		instructionsTxt.setFont(new Font("Javanese Text", Font.PLAIN, 14));
-		instructionsTxt.setWrapStyleWord(true);
-		instructionsTxt.setLineWrap(true);
-		instructionsTxt.setEditable(false);
-		instructionsTxt.setBounds(165, 39, 600, 60);
-		contentPane.add(instructionsTxt);
+		instructionPanel = new JPanel(new BorderLayout());
+		instructionPanel.setBackground(new Color(255, 240, 0));
+		instructionPanel.setBorder(new LineBorder(new Color(0, 140, 70), 4, true));
+		instructionPanel.setBounds(42, 34, 760, 68);
+
+		instructionLabel = new JLabel("", JLabel.CENTER);
+		instructionLabel.setFont(new Font("Arial", Font.PLAIN, 16));
+		instructionLabel.setForeground(Color.BLACK);
+		instructionLabel.setBorder(BorderFactory.createEmptyBorder(4, 10, 4, 10));
+		instructionPanel.add(instructionLabel, BorderLayout.CENTER);
+		contentPane.add(instructionPanel);
 
 		JButton BackBtn = new JButton();
 		BackBtn.setBorderPainted(false);
@@ -104,7 +106,7 @@ public class Wordle extends JFrame {
 		BackBtn.setContentAreaFilled(false);
 		BackBtn.setIcon(new ImageIcon(Wordle.class.getResource("/Resources/Images/back.png")));
 		BackBtn.setPressedIcon(new ImageIcon(Wordle.class.getResource("/Resources/Images/back-Pressed.png")));
-		BackBtn.setBounds(60, 39, 89, 34);
+		BackBtn.setBounds(42, 110, 89, 34);
 		BackBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				int result = JOptionPane.showConfirmDialog(Wordle.this,
@@ -119,27 +121,33 @@ public class Wordle extends JFrame {
 		});
 		contentPane.add(BackBtn);
 
+		JPanel diffPanel = new JPanel(null);
+		diffPanel.setBackground(new Color(255, 240, 0));
+		diffPanel.setBorder(new LineBorder(new Color(0, 140, 70), 3, true));
+		diffPanel.setBounds((844 - 420) / 2, 106, 420, 34);
+
 		JLabel diffLabel = new JLabel("Difficulty:");
-		diffLabel.setFont(new Font("Javanese Text", Font.PLAIN, 14));
-		diffLabel.setOpaque(true);
-		diffLabel.setBackground(Color.YELLOW);
+		diffLabel.setFont(new Font("Arial", Font.BOLD, 15));
 		diffLabel.setForeground(Color.BLACK);
-		diffLabel.setBounds(165, 103, 80, 26);
-		contentPane.add(diffLabel);
+		diffLabel.setBounds(8, 6, 90, 22);
+		diffPanel.add(diffLabel);
 
 		easyRadio = new JRadioButton("Easy (5 letters)", true);
-		easyRadio.setBounds(245, 103, 130, 26);
-		easyRadio.setOpaque(true);
-		easyRadio.setBackground(Color.YELLOW);
+		easyRadio.setFont(new Font("Arial", Font.PLAIN, 15));
+		easyRadio.setOpaque(false);
+		easyRadio.setBounds(102, 5, 145, 24);
+		diffPanel.add(easyRadio);
+
 		hardRadio = new JRadioButton("Hard (6 letters)");
-		hardRadio.setBounds(375, 103, 150, 26);
-		hardRadio.setOpaque(true);
-		hardRadio.setBackground(Color.YELLOW);
+		hardRadio.setFont(new Font("Arial", Font.PLAIN, 15));
+		hardRadio.setOpaque(false);
+		hardRadio.setBounds(255, 5, 145, 24);
+		diffPanel.add(hardRadio);
+
+		contentPane.add(diffPanel);
 		ButtonGroup diffGroup = new ButtonGroup();
 		diffGroup.add(easyRadio);
 		diffGroup.add(hardRadio);
-		contentPane.add(easyRadio);
-		contentPane.add(hardRadio);
 
 		ActionListener difficultyListener = new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -170,7 +178,7 @@ public class Wordle extends JFrame {
 				tile.setOpaque(true);
 				tile.setBackground(TILE_EMPTY_BG);
 				tile.setForeground(TILE_TEXT);
-				tile.setFont(new Font("Mongolian Baiti", Font.BOLD, 22));
+				tile.setFont(new Font("Arial", Font.BOLD, 20));
 				tile.setBorder(new LineBorder(Color.DARK_GRAY, 2));
 				tileLabels[r][c] = tile;
 				contentPane.add(tile);
@@ -178,15 +186,16 @@ public class Wordle extends JFrame {
 		}
 
 		typingHintLabel = new JLabel();
-		typingHintLabel.setFont(new Font("Javanese Text", Font.PLAIN, 14));
+		typingHintLabel.setFont(new Font("Arial", Font.BOLD, 16));
 		typingHintLabel.setHorizontalAlignment(SwingConstants.CENTER);
 		typingHintLabel.setOpaque(true);
-		typingHintLabel.setBackground(Color.YELLOW);
+		typingHintLabel.setBackground(new Color(255, 240, 0));
 		typingHintLabel.setForeground(Color.BLACK);
+		typingHintLabel.setBorder(new LineBorder(new Color(0, 140, 70), 3, true));
 		contentPane.add(typingHintLabel);
 
 		statusLabel = new JLabel(" ");
-		statusLabel.setFont(new Font("Javanese Text", Font.PLAIN, 13));
+		statusLabel.setFont(new Font("Arial", Font.BOLD, 14));
 		statusLabel.setForeground(new Color(139, 0, 0));
 		contentPane.add(statusLabel);
 
@@ -235,9 +244,9 @@ public class Wordle extends JFrame {
 	}
 
 	private void updateInstructionText() {
-		instructionsTxt.setText("Guess the " + cols + "-letter word in 6 tries. Type on keyboard\n"
-				+ "and press SUBMIT or Enter.\n"
-				+ "Green = correct position. Yellow = wrong position. Gray = not in word.");
+		instructionLabel.setText("<html><div style='text-align: center;'>Guess the " + cols
+				+ "-letter word in 6 tries. Type on keyboard and press SUBMIT or Enter.<br>"
+				+ "Green = correct position. Yellow = wrong position. Gray = not in word.</div></html>");
 	}
 
 	private void installKeyboardInput() {
@@ -310,13 +319,16 @@ public class Wordle extends JFrame {
 
 		typingHintLabel.setText("Type your guess on keyboard (" + cols + " letters), Backspace to erase:");
 		int hintY = GRID_TOP + gridHeight + 8;
-		int buttonY = hintY + 26;
-		int hintWidth = gridWidth + 240;
+		int buttonY = hintY + 28;
+		int hintWidth = 560;
 		int hintX = (844 - hintWidth) / 2;
-		typingHintLabel.setBounds(hintX, hintY, hintWidth, 22);
+		typingHintLabel.setBounds(hintX, hintY, hintWidth, 24);
 		statusLabel.setBounds(hintX, hintY + 22, hintWidth, 0);
-		submitBtn.setBounds(gridX, buttonY, 89, 28);
-		newGameBtn.setBounds(gridX + 100, buttonY, 89, 28);
+		// Fixed horizontal position based on 5-letter grid center so buttons don't shift on difficulty change
+		int fixedGridWidth5 = 5 * TILE + 4 * GAP;
+		int fixedGridX5 = (844 - fixedGridWidth5) / 2;
+		submitBtn.setBounds(fixedGridX5, buttonY, 89, 28);
+		newGameBtn.setBounds(fixedGridX5 + 100, buttonY, 89, 28);
 	}
 
 	private void pickNewSecretWord() {
