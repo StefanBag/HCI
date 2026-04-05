@@ -178,6 +178,10 @@ public class MixedWords extends JFrame {
             btn.setFont(new Font("Arial", Font.BOLD, 30));
             btn.setPreferredSize(new Dimension(65, 65));
             btn.setBackground(Color.WHITE);
+            // These three lines are required on macOS for setBackground() to actually work
+            btn.setOpaque(true);
+            btn.setBorderPainted(false);
+            btn.setContentAreaFilled(true);
             btn.setFocusPainted(false);
 
             btn.addActionListener(e -> selectLetter(index));
