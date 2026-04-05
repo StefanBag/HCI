@@ -12,7 +12,6 @@ import java.awt.Insets;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -22,7 +21,6 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.Timer;
 import javax.swing.border.LineBorder;
 
 public class MixedWords extends JFrame {
@@ -39,7 +37,7 @@ public class MixedWords extends JFrame {
 
     private JButton leftArrow;
     private JButton rightArrow;
-    private JButton nextBtn;
+    private JButton submitBtn;
     private JLabel scoreLabel;
 
     private int currentWordIndex = 0;
@@ -65,6 +63,12 @@ public class MixedWords extends JFrame {
         loadWord();
     }
 
+    private ImageIcon resizeIcon(String path, int width, int height) {
+        ImageIcon icon = new ImageIcon(MixedWords.class.getResource(path));
+        Image img = icon.getImage().getScaledInstance(width, height, Image.SCALE_SMOOTH);
+        return new ImageIcon(img);
+    }
+
     private void buildUI() {
         JPanel topContainer = new JPanel();
         topContainer.setOpaque(false);
@@ -73,14 +77,14 @@ public class MixedWords extends JFrame {
         JPanel instructionPanel = new JPanel(new BorderLayout());
         instructionPanel.setBackground(new Color(255, 240, 0));
         instructionPanel.setBorder(new LineBorder(new Color(0, 140, 70), 4, true));
-        instructionPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 90));
-        instructionPanel.setPreferredSize(new Dimension(760, 90));
+        instructionPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 110));
+        instructionPanel.setPreferredSize(new Dimension(760, 110));
 
         JLabel instructionLabel = new JLabel(
             "<html><div style='text-align: center;'>Click a letter, then use the arrows to move it.<br>Rearrange the letters to spell the word.</div></html>",
             JLabel.CENTER
         );
-        instructionLabel.setFont(new Font("Comic Sans MS", Font.BOLD, 20));
+        instructionLabel.setFont(new Font("Arial", Font.PLAIN, 30));
         instructionLabel.setForeground(Color.BLACK);
         instructionLabel.setBorder(BorderFactory.createEmptyBorder(8, 15, 8, 15));
         instructionPanel.add(instructionLabel, BorderLayout.CENTER);
@@ -117,15 +121,17 @@ public class MixedWords extends JFrame {
         });
 
         scoreLabel = new JLabel("Score: 0 out of " + numWords, JLabel.CENTER);
-        scoreLabel.setFont(new Font("Arial", Font.BOLD, 28));
+        scoreLabel.setFont(new Font("Arial", Font.BOLD, 30));
         scoreLabel.setForeground(Color.YELLOW);
 
         gbc.gridx = 0;
         gbc.weightx = 0.0;
+        gbc.insets = new Insets(0, 10, 0, 0);
         topPanel.add(backBtn, gbc);
 
         gbc.gridx = 1;
         gbc.weightx = 1.0;
+        gbc.insets = new Insets(0, 0, 0, 0);
         topPanel.add(scoreLabel, gbc);
 
         gbc.gridx = 2;
@@ -150,7 +156,7 @@ public class MixedWords extends JFrame {
 
         lettersPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 0));
         lettersPanel.setOpaque(false);
-        lettersPanel.setPreferredSize(new Dimension(760, 90));
+        lettersPanel.setPreferredSize(new Dimension(760, 100));
         lettersPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
 
         letterButtons = new JButton[10];
@@ -158,7 +164,7 @@ public class MixedWords extends JFrame {
             final int index = i;
 
             JButton btn = new JButton("");
-            btn.setFont(new Font("Arial", Font.BOLD, 24));
+            btn.setFont(new Font("Arial", Font.BOLD, 30));
             btn.setMargin(new Insets(0, 0, 0, 0));
             btn.setOpaque(true);
             btn.setContentAreaFilled(true);
@@ -177,24 +183,36 @@ public class MixedWords extends JFrame {
         bottomPanel.setOpaque(false);
         bottomPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-        leftArrow = new JButton("<");
-        leftArrow.setFont(new Font("Arial", Font.BOLD, 26));
-        leftArrow.setPreferredSize(new Dimension(80, 50));
-        styleButton(leftArrow);
+        leftArrow = new JButton();
+        leftArrow.setIcon(resizeIcon("/Resources/Images/LeftArrow (2).png", 110, 80));
+        leftArrow.setPressedIcon(resizeIcon("/Resources/Images/LeftArrow (1).png", 110, 80));
+        leftArrow.setBorderPainted(false);
+        leftArrow.setContentAreaFilled(false);
+        leftArrow.setFocusPainted(false);
+        leftArrow.setOpaque(false);
+        leftArrow.setPreferredSize(new Dimension(110, 80));
 
-        rightArrow = new JButton(">");
-        rightArrow.setFont(new Font("Arial", Font.BOLD, 26));
-        rightArrow.setPreferredSize(new Dimension(80, 50));
-        styleButton(rightArrow);
+        rightArrow = new JButton();
+        rightArrow.setIcon(resizeIcon("/Resources/Images/RightArrow (2).png", 110, 80));
+        rightArrow.setPressedIcon(resizeIcon("/Resources/Images/RightArrow (1).png", 110, 80));
+        rightArrow.setBorderPainted(false);
+        rightArrow.setContentAreaFilled(false);
+        rightArrow.setFocusPainted(false);
+        rightArrow.setOpaque(false);
+        rightArrow.setPreferredSize(new Dimension(110, 80));
 
-        nextBtn = new JButton("NEXT WORD");
-        nextBtn.setFont(new Font("Arial", Font.BOLD, 20));
-        nextBtn.setPreferredSize(new Dimension(180, 50));
-        styleButton(nextBtn);
+        submitBtn = new JButton();
+        submitBtn.setIcon(resizeIcon("/Resources/Images/submitbutton.png", 190, 70));
+        submitBtn.setPressedIcon(resizeIcon("/Resources/Images/submitbutton-pressed.png", 190, 70));
+        submitBtn.setBorderPainted(false);
+        submitBtn.setContentAreaFilled(false);
+        submitBtn.setFocusPainted(false);
+        submitBtn.setOpaque(false);
+        submitBtn.setPreferredSize(new Dimension(190, 70));
 
         bottomPanel.add(leftArrow);
         bottomPanel.add(rightArrow);
-        bottomPanel.add(nextBtn);
+        bottomPanel.add(submitBtn);
 
         middleStack.add(Box.createVerticalStrut(10));
         middleStack.add(lettersPanel);
@@ -206,15 +224,7 @@ public class MixedWords extends JFrame {
 
         leftArrow.addActionListener(e -> moveLeft());
         rightArrow.addActionListener(e -> moveRight());
-        nextBtn.addActionListener(e -> nextWord());
-    }
-
-    private void styleButton(JButton button) {
-        button.setOpaque(true);
-        button.setContentAreaFilled(true);
-        button.setBorderPainted(false);
-        button.setFocusPainted(false);
-        button.setBackground(Color.WHITE);
+        submitBtn.addActionListener(e -> submitWord());
     }
 
     private void loadWord() {
@@ -241,7 +251,6 @@ public class MixedWords extends JFrame {
         }
 
         selectedIndex = -1;
-        resetArrowColors();
         lettersPanel.revalidate();
         lettersPanel.repaint();
     }
@@ -257,7 +266,6 @@ public class MixedWords extends JFrame {
 
         selectedIndex = index;
         letterButtons[selectedIndex].setBackground(Color.YELLOW);
-        resetArrowColors();
     }
 
     private void moveLeft() {
@@ -270,7 +278,6 @@ public class MixedWords extends JFrame {
             }
 
             letterButtons[selectedIndex].setBackground(Color.YELLOW);
-            flashArrow(leftArrow);
         }
     }
 
@@ -284,21 +291,7 @@ public class MixedWords extends JFrame {
             }
 
             letterButtons[selectedIndex].setBackground(Color.YELLOW);
-            flashArrow(rightArrow);
         }
-    }
-
-    private void flashArrow(JButton arrow) {
-        arrow.setBackground(Color.YELLOW);
-
-        Timer timer = new Timer(300, e -> arrow.setBackground(Color.WHITE));
-        timer.setRepeats(false);
-        timer.start();
-    }
-
-    private void resetArrowColors() {
-        leftArrow.setBackground(Color.WHITE);
-        rightArrow.setBackground(Color.WHITE);
     }
 
     private void swap(int i, int j) {
@@ -307,7 +300,7 @@ public class MixedWords extends JFrame {
         letterButtons[j].setText(temp);
     }
 
-    private void nextWord() {
+    private void submitWord() {
         StringBuilder attempt = new StringBuilder();
 
         for (int i = 0; i < currentWord.length(); i++) {
@@ -316,14 +309,7 @@ public class MixedWords extends JFrame {
 
         if (attempt.toString().equals(currentWord)) {
             score++;
-            nextBtn.setBackground(Color.GREEN);
-        } else {
-            nextBtn.setBackground(Color.RED);
         }
-
-        Timer timer = new Timer(700, e -> nextBtn.setBackground(Color.WHITE));
-        timer.setRepeats(false);
-        timer.start();
 
         scoreLabel.setText("Score: " + score + " out of " + numWords);
 
