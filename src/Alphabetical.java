@@ -189,13 +189,14 @@ public class Alphabetical extends JFrame {
 		// Move word up button
 		JButton WordUpBtn = new JButton("UP");
 		WordUpBtn.setSelectedIcon(null);
+		WordUpBtn.setFocusPainted(false);
 		WordUpBtn.setMargin(new Insets(2, 14, 2, 1));
 		WordUpBtn.setIconTextGap(0);
 		WordUpBtn.setOpaque(false);
 		WordUpBtn.setContentAreaFilled(false);
 		WordUpBtn.setBorderPainted(false);
-		WordUpBtn.setIcon(new ImageIcon(Alphabetical.class.getResource("/Resources/Images/ArrowUp.png")));
-		WordUpBtn.setPressedIcon(new ImageIcon(Alphabetical.class.getResource("/Resources/Images/ArrowUpPressed.png")));
+		WordUpBtn.setIcon(new ImageIcon(Alphabetical.class.getResource("/Resources/Images/Up (2).png")));
+		WordUpBtn.setPressedIcon(new ImageIcon(Alphabetical.class.getResource("/Resources/Images/Up (4).png")));
 		WordUpBtn.setBounds(406, 158, 75, 70);
 		WordUpBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -220,13 +221,13 @@ public class Alphabetical extends JFrame {
 		JButton WordDownBtn = new JButton("Down");
 		WordDownBtn.setMargin(new Insets(2, 14, 2, 1));
 		WordDownBtn.setIconTextGap(0);
+		WordDownBtn.setFocusPainted(false);
 		WordDownBtn.setOpaque(false);
 		WordDownBtn.setContentAreaFilled(false);
 		WordDownBtn.setBorderPainted(false);
-		WordDownBtn.setIcon(new ImageIcon(Alphabetical.class.getResource("/Resources/Images/ArrowDown.png")));
-		WordDownBtn.setPressedIcon(
-				new ImageIcon(Alphabetical.class.getResource("/Resources/Images/ArrowDown-Pressed.png")));
-		WordDownBtn.setBounds(406, 251, 75, 64);
+		WordDownBtn.setIcon(new ImageIcon(Alphabetical.class.getResource("/Resources/Images/Down (2).png")));
+		WordDownBtn.setPressedIcon(new ImageIcon(Alphabetical.class.getResource("/Resources/Images/Down (4).png")));
+		WordDownBtn.setBounds(406, 251, 75, 70);
 		WordDownBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				if (selectedMasterIndex != -1 && selectedMasterIndex < listModel.getSize() - 1) {
