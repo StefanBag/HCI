@@ -86,10 +86,10 @@ public class WordSearch extends JFrame {
     private void buildUI(JPanel contentPane) {
 
         // --- Instruction panel (matches style in Alphabetical/MissingLetter) ---
-        JPanel instructionPanel = new JPanel();
+        JPanel instructionPanel = new JPanel(new java.awt.BorderLayout());
         instructionPanel.setBackground(new Color(255, 240, 0));
         instructionPanel.setBorder(new LineBorder(new Color(0, 140, 70), 4, true));
-        instructionPanel.setBounds(42, 34, 770, 80);
+        instructionPanel.setBounds(42, 34, 776, 90);
 
         JLabel instructionLabel = new JLabel(
             "<html><div style='text-align:center;'>"
@@ -98,10 +98,10 @@ public class WordSearch extends JFrame {
             + "</div></html>",
             JLabel.CENTER
         );
-        instructionLabel.setFont(new Font("Arial", Font.PLAIN, 18));
+        instructionLabel.setFont(new Font("Arial", Font.PLAIN, 20));
         instructionLabel.setForeground(Color.BLACK);
-        instructionLabel.setBorder(BorderFactory.createEmptyBorder(6, 10, 6, 10));
-        instructionPanel.add(instructionLabel);
+        instructionLabel.setBorder(BorderFactory.createEmptyBorder(8, 15, 8, 15));
+        instructionPanel.add(instructionLabel, java.awt.BorderLayout.CENTER);
         contentPane.add(instructionPanel);
 
         // --- Back button ---
