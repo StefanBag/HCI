@@ -309,7 +309,7 @@ public class Alphabetical extends JFrame {
 		HelpBtn.setIcon(new ImageIcon(Alphabetical.class.getResource("/Resources/Images/information.png")));
 		HelpBtn.setPressedIcon(
 				new ImageIcon(Alphabetical.class.getResource("/Resources/Images/information-pressed.png")));
-		HelpBtn.setBounds(395, 360, 89, 34);
+		HelpBtn.setBounds(403, 360, 89, 34);
 		HelpBtn.setToolTipText("Green = correct position | Yellow = close | Red = far from correct spot");
 		HelpBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -366,12 +366,12 @@ public class Alphabetical extends JFrame {
 		int leftCount = Math.min(total, MAX_ROWS_PER_COLUMN);
 		int rightCount = total - leftCount;
 
-		leftList.setBounds(208, 149, leftList.getPreferredSize().width + 100, leftList.getPreferredSize().height);
+		leftList.setBounds(190, 149, leftList.getPreferredSize().width + 10, leftList.getPreferredSize().height);
 
 		if (rightCount > 0) {
-			int rightX = leftList.getX() + leftList.getWidth() + 135;
+			int rightX = leftList.getX() + leftList.getWidth() + 125;
 			int rightY = leftList.getY();
-			rightList.setBounds(rightX, rightY, rightList.getPreferredSize().width + 100,
+			rightList.setBounds(rightX, rightY, rightList.getPreferredSize().width + 10,
 					rightList.getPreferredSize().height);
 			rightList.setVisible(true);
 		} else {
@@ -406,10 +406,10 @@ public class Alphabetical extends JFrame {
 			ListModel<String> model = leftList.getModel();
 			if (i < model.getSize()) { // print the leftList numbers
 				int y = leftListY + (i * numberHeight);
-				listedNumbers[i].setBounds(leftList.getX() - numberWidth - 5, y, numberWidth, numberHeight);
+				listedNumbers[i].setBounds(leftList.getX() - numberWidth, y, numberWidth, numberHeight);
 			} else { // print the rightList numbers
 				int y = leftListY + (x++ * numberHeight);
-				listedNumbers[i].setBounds(rightList.getX() + rightList.getPreferredSize().width + 120, y, numberWidth,
+				listedNumbers[i].setBounds(rightList.getX() + rightList.getPreferredSize().width + 10, y, numberWidth,
 						numberHeight);
 			}
 		}
