@@ -21,6 +21,9 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JTextField;
+import javax.swing.SwingConstants;
+import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 
 public class MixedWords extends JFrame {
@@ -70,15 +73,20 @@ public class MixedWords extends JFrame {
     }
 
     private void buildUI() {
+
         JPanel topContainer = new JPanel();
         topContainer.setOpaque(false);
         topContainer.setLayout(new BoxLayout(topContainer, BoxLayout.Y_AXIS));
+
+        // Instructions panel wrapped to add a small gap so it doesn't touch the wooden border
+        JPanel instructionWrapper = new JPanel(new BorderLayout());
+        instructionWrapper.setOpaque(false);
+        instructionWrapper.setBorder(BorderFactory.createEmptyBorder(0, 5, 0, 5));
 
         JPanel instructionPanel = new JPanel(new BorderLayout());
         instructionPanel.setBackground(new Color(255, 240, 0));
         instructionPanel.setBorder(new LineBorder(new Color(0, 140, 70), 4, true));
         instructionPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 110));
-        instructionPanel.setPreferredSize(new Dimension(760, 110));
 
         JLabel instructionLabel = new JLabel(
             "<html><div style='text-align: center;'>Click a letter, then use the arrows to move it.<br>Rearrange the letters to spell the word.</div></html>",
@@ -87,8 +95,11 @@ public class MixedWords extends JFrame {
         instructionLabel.setFont(new Font("Arial", Font.PLAIN, 30));
         instructionLabel.setForeground(Color.BLACK);
         instructionLabel.setBorder(BorderFactory.createEmptyBorder(8, 15, 8, 15));
-        instructionPanel.add(instructionLabel, BorderLayout.CENTER);
 
+        instructionPanel.add(instructionLabel, BorderLayout.CENTER);
+        instructionWrapper.add(instructionPanel, BorderLayout.CENTER);
+
+        // Top panel (back + score)
         JPanel topPanel = new JPanel(new GridBagLayout());
         topPanel.setOpaque(false);
 
@@ -108,14 +119,13 @@ public class MixedWords extends JFrame {
         backBtn.addActionListener(e -> {
             int result = JOptionPane.showConfirmDialog(
                 MixedWords.this,
-                "Your current sorting progress will be lost. Are you sure you want to return to the main menu?",
-                "Exit to Main Menu",
+                "Your progress will be lost. Return to main menu?",
+                "Exit",
                 JOptionPane.YES_NO_OPTION
             );
 
             if (result == JOptionPane.YES_OPTION) {
-                MainMenu menu = new MainMenu(words);
-                menu.setVisible(true);
+                new MainMenu(words).setVisible(true);
                 dispose();
             }
         });
@@ -125,63 +135,59 @@ public class MixedWords extends JFrame {
         scoreLabel.setForeground(Color.YELLOW);
 
         gbc.gridx = 0;
-        gbc.weightx = 0.0;
+        gbc.weightx = 0;
         gbc.insets = new Insets(0, 10, 0, 0);
         topPanel.add(backBtn, gbc);
 
         gbc.gridx = 1;
-        gbc.weightx = 1.0;
+        gbc.weightx = 1;
         gbc.insets = new Insets(0, 0, 0, 0);
         topPanel.add(scoreLabel, gbc);
 
+        // Invisible placeholder to balance the back button and truly center the score
+        JPanel placeholder = new JPanel();
+        placeholder.setOpaque(false);
+        placeholder.setPreferredSize(new Dimension(89, 34));
         gbc.gridx = 2;
-        gbc.weightx = 0.0;
-        JPanel rightSpacer = new JPanel();
-        rightSpacer.setOpaque(false);
-        rightSpacer.setPreferredSize(backBtn.getPreferredSize());
-        topPanel.add(rightSpacer, gbc);
+        gbc.weightx = 0;
+        topPanel.add(placeholder, gbc);
 
-        topContainer.add(instructionPanel);
-        topContainer.add(Box.createVerticalStrut(8));
+        topContainer.add(instructionWrapper);
+        topContainer.add(Box.createVerticalStrut(10));
         topContainer.add(topPanel);
 
         contentPane.add(topContainer, BorderLayout.NORTH);
 
+        // Center
         JPanel centerPanel = new JPanel(new GridBagLayout());
         centerPanel.setOpaque(false);
 
-        JPanel middleStack = new JPanel();
-        middleStack.setOpaque(false);
-        middleStack.setLayout(new BoxLayout(middleStack, BoxLayout.Y_AXIS));
+        JPanel stack = new JPanel();
+        stack.setOpaque(false);
+        stack.setLayout(new BoxLayout(stack, BoxLayout.Y_AXIS));
 
         lettersPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 0));
         lettersPanel.setOpaque(false);
-        lettersPanel.setPreferredSize(new Dimension(760, 100));
-        lettersPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
 
         letterButtons = new JButton[10];
+
         for (int i = 0; i < letterButtons.length; i++) {
             final int index = i;
 
             JButton btn = new JButton("");
             btn.setFont(new Font("Arial", Font.BOLD, 30));
-            btn.setMargin(new Insets(0, 0, 0, 0));
-            btn.setOpaque(true);
-            btn.setContentAreaFilled(true);
-            btn.setBorderPainted(false);
-            btn.setFocusPainted(false);
-            btn.setBackground(Color.WHITE);
             btn.setPreferredSize(new Dimension(65, 65));
-            btn.setHorizontalAlignment(JLabel.CENTER);
-            btn.setVerticalAlignment(JLabel.CENTER);
+            btn.setBackground(Color.WHITE);
+            btn.setFocusPainted(false);
 
             btn.addActionListener(e -> selectLetter(index));
+
             letterButtons[i] = btn;
         }
 
-        JPanel bottomPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 15, 5));
-        bottomPanel.setOpaque(false);
-        bottomPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        // Bottom buttons
+        JPanel bottom = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 5));
+        bottom.setOpaque(false);
 
         leftArrow = new JButton();
         leftArrow.setIcon(resizeIcon("/Resources/Images/LeftArrow (2).png", 110, 80));
@@ -189,8 +195,6 @@ public class MixedWords extends JFrame {
         leftArrow.setBorderPainted(false);
         leftArrow.setContentAreaFilled(false);
         leftArrow.setFocusPainted(false);
-        leftArrow.setOpaque(false);
-        leftArrow.setPreferredSize(new Dimension(110, 80));
 
         rightArrow = new JButton();
         rightArrow.setIcon(resizeIcon("/Resources/Images/RightArrow (2).png", 110, 80));
@@ -198,8 +202,6 @@ public class MixedWords extends JFrame {
         rightArrow.setBorderPainted(false);
         rightArrow.setContentAreaFilled(false);
         rightArrow.setFocusPainted(false);
-        rightArrow.setOpaque(false);
-        rightArrow.setPreferredSize(new Dimension(110, 80));
 
         submitBtn = new JButton();
         submitBtn.setIcon(resizeIcon("/Resources/Images/submitbutton.png", 190, 70));
@@ -207,19 +209,16 @@ public class MixedWords extends JFrame {
         submitBtn.setBorderPainted(false);
         submitBtn.setContentAreaFilled(false);
         submitBtn.setFocusPainted(false);
-        submitBtn.setOpaque(false);
-        submitBtn.setPreferredSize(new Dimension(190, 70));
 
-        bottomPanel.add(leftArrow);
-        bottomPanel.add(rightArrow);
-        bottomPanel.add(submitBtn);
+        bottom.add(leftArrow);
+        bottom.add(rightArrow);
+        bottom.add(submitBtn);
 
-        middleStack.add(Box.createVerticalStrut(10));
-        middleStack.add(lettersPanel);
-        middleStack.add(Box.createVerticalStrut(10));
-        middleStack.add(bottomPanel);
+        stack.add(lettersPanel);
+        stack.add(Box.createVerticalStrut(10));
+        stack.add(bottom);
 
-        centerPanel.add(middleStack);
+        centerPanel.add(stack);
         contentPane.add(centerPanel, BorderLayout.CENTER);
 
         leftArrow.addActionListener(e -> moveLeft());
