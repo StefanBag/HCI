@@ -73,6 +73,10 @@ public class Wordle extends JFrame {
 	private final JLabel Background = new JLabel("");
 	private String[] words;
 
+	/** Tracks words already used as the secret for each difficulty, to avoid repeats. */
+	private final java.util.Set<String> usedWords5 = new java.util.HashSet<>();
+	private final java.util.Set<String> usedWords6 = new java.util.HashSet<>();
+
 	public Wordle(String[] words) {
 		this.words = words;
 		currentRow = 0;
@@ -332,24 +336,36 @@ public class Wordle extends JFrame {
 	}
 
 	private void pickNewSecretWord() {
-		String[] defaultBank = cols == 5 ? WORD_BANK_5 : WORD_BANK_6;
+		java.util.Set<String> usedWords = cols == 5 ? usedWords5 : usedWords6;
 
-		// Collect user-inputted words that match the current difficulty length
-		java.util.List<String> userMatches = new java.util.ArrayList<>();
+		// Build user word list and default bank for current length
+		java.util.List<String> userCandidates = new java.util.ArrayList<>();
 		if (words != null) {
 			for (String w : words) {
 				if (w != null && w.trim().length() == cols) {
-					userMatches.add(w.trim().toUpperCase());
+					userCandidates.add(w.trim().toUpperCase());
 				}
 			}
 		}
+		String[] defaultBank = cols == 5 ? WORD_BANK_5 : WORD_BANK_6;
+		java.util.List<String> defaultCandidates = new java.util.ArrayList<>(java.util.Arrays.asList(defaultBank));
 
-		// Build pool: user matches added 3x for higher priority, then default bank
-		java.util.List<String> pool = new java.util.ArrayList<>();
-		for (int i = 0; i < 3; i++) pool.addAll(userMatches);
-		for (String w : defaultBank) pool.add(w);
+		// Pick from unused user words first; only fall back to default bank once all are exhausted
+		java.util.List<String> available = new java.util.ArrayList<>(userCandidates);
+		available.removeAll(usedWords);
+		if (available.isEmpty()) {
+			// All user words played — try default bank
+			available = new java.util.ArrayList<>(defaultCandidates);
+			available.removeAll(usedWords);
+			if (available.isEmpty()) {
+				// Entire pool exhausted — reset and start over with user words
+				usedWords.clear();
+				available = userCandidates.isEmpty() ? new java.util.ArrayList<>(defaultCandidates) : new java.util.ArrayList<>(userCandidates);
+			}
+		}
 
-		secretWord = pool.get(rng.nextInt(pool.size()));
+		secretWord = available.get(rng.nextInt(available.size()));
+		usedWords.add(secretWord);
 	}
 
 	private void resetGame() {
