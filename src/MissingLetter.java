@@ -64,7 +64,7 @@ public class MissingLetter extends JFrame {
 		JPanel instructionPanel = new JPanel(new BorderLayout());
 		instructionPanel.setBackground(new Color(255, 240, 0));
 		instructionPanel.setBorder(new LineBorder(new Color(0, 140, 70), 4, true));
-		instructionPanel.setBounds(42, 34, 760, 90);
+		instructionPanel.setBounds(42, 34, 776, 90);
 
 		JLabel instructionLabel = new JLabel(
 			"<html><div style='text-align: center;'>Type the missing letter in the box and click SUBMIT.<br>Get them all right to win!</div></html>",
@@ -133,7 +133,7 @@ public class MissingLetter extends JFrame {
 		btnSubmit.setContentAreaFilled(false);
 		btnSubmit.setBorderPainted(false);
 		btnSubmit.setToolTipText("Submit your answer");
-		btnSubmit.setBounds(370, 370, 89, 34);
+		btnSubmit.setBounds(376, 370, 89, 34);
 		btnSubmit.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				checkAnswer();
