@@ -1,8 +1,14 @@
-import javax.swing.*;
-import javax.swing.border.EmptyBorder;
+import java.awt.Color;
+import java.awt.Cursor;
+import java.awt.Font;
 
-import java.awt.*;
-import java.awt.event.*;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.SwingConstants;
+import javax.swing.border.EmptyBorder;
 
 public class MainMenu extends JFrame {
 
@@ -64,15 +70,17 @@ public class MainMenu extends JFrame {
 		// Row 2 buttons
 		int row2StartX = (860 - (2 * btnW + gapX)) / 2;
 
-		String[] imageNames     = { "ALPHABETICAL", "WORD_SEARCH", "WORDLE", "MISSING_LETTER", "MIXED_WORDS" };
+		String[] imageNames = { "ALPHABETICAL", "WORD_SEARCH", "WORDLE", "MISSING_LETTER", "MIXED_WORDS" };
 
 		for (int i = 0; i < 5; i++) {
 			final int index = i;
 			JButton btn = new JButton();
 			btn.setIcon(new ImageIcon(MainMenu.class.getResource("/Resources/Images/" + imageNames[i] + ".png")));
-			btn.setPressedIcon(new ImageIcon(MainMenu.class.getResource("/Resources/Images/" + imageNames[i] + "-Pressed.png")));
+			btn.setPressedIcon(
+					new ImageIcon(MainMenu.class.getResource("/Resources/Images/" + imageNames[i] + "-Pressed.png")));
 			btn.setOpaque(false);
 			btn.setContentAreaFilled(false);
+			btn.setFocusPainted(false);
 			btn.setBorderPainted(false);
 			btn.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 
@@ -88,31 +96,31 @@ public class MainMenu extends JFrame {
 
 			btn.addActionListener(e -> {
 				switch (index) {
-					case 0: // Alphabetical
-						Alphabetical a = new Alphabetical(words);
-						a.setVisible(true);
-						dispose();
-						break;
-					case 1: // Word Search
-						WordSearch ws = new WordSearch(words);
-						ws.setVisible(true);
-						dispose();						
-						break;
-					case 2: // Wordle
-						Wordle w = new Wordle(words);
-						w.setVisible(true);
-						dispose();					
-						break;
-					case 3: // Missing Letter
-						MissingLetter ml = new MissingLetter(words);
-						ml.setVisible(true);
-						dispose();					
-						break;
-					case 4: // Mixed Words
-						MixedWords mw = new MixedWords(words);
-						mw.setVisible(true);
-						dispose();
-						break;
+				case 0: // Alphabetical
+					Alphabetical a = new Alphabetical(words);
+					a.setVisible(true);
+					dispose();
+					break;
+				case 1: // Word Search
+					WordSearch ws = new WordSearch(words);
+					ws.setVisible(true);
+					dispose();
+					break;
+				case 2: // Wordle
+					Wordle w = new Wordle(words);
+					w.setVisible(true);
+					dispose();
+					break;
+				case 3: // Missing Letter
+					MissingLetter ml = new MissingLetter(words);
+					ml.setVisible(true);
+					dispose();
+					break;
+				case 4: // Mixed Words
+					MixedWords mw = new MixedWords(words);
+					mw.setVisible(true);
+					dispose();
+					break;
 				}
 			});
 
