@@ -38,8 +38,8 @@ public class Welcome extends JFrame {
 
         // ENTER button
         JButton enterBtn = new JButton();
-        enterBtn.setIcon(new ImageIcon(Welcome.class.getResource("/Resources/Images/play.png")));
-        enterBtn.setPressedIcon(new ImageIcon(Welcome.class.getResource("/Resources/Images/play-pressed.png")));
+        enterBtn.setIcon(new ImageIcon(getClass().getResource("/Resources/Images/play.png")));
+        enterBtn.setPressedIcon(new ImageIcon(getClass().getResource("/Resources/Images/play-pressed.png")));
         enterBtn.setOpaque(false);
         enterBtn.setContentAreaFilled(false);
         enterBtn.setBorderPainted(false);
@@ -52,7 +52,7 @@ public class Welcome extends JFrame {
 
         // Background
         JLabel background = new JLabel();
-        background.setIcon(new ImageIcon(Welcome.class.getResource("/Resources/Images/GreenBoard.jpg")));
+        background.setIcon(new ImageIcon(getClass().getResource("/Resources/Images/GreenBoard.jpg")));
         background.setBounds(0, 0, 844, 471);
 
         contentPane.add(title);

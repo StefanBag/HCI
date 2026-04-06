@@ -44,8 +44,8 @@ public class MainMenu extends JFrame {
 
 		// Back button
 		JButton backBtn = new JButton();
-		backBtn.setIcon(new ImageIcon(MainMenu.class.getResource("/Resources/Images/back.png")));
-		backBtn.setPressedIcon(new ImageIcon(MainMenu.class.getResource("/Resources/Images/back-Pressed.png")));
+		backBtn.setIcon(new ImageIcon(getClass().getResource("/Resources/Images/back.png")));
+		backBtn.setPressedIcon(new ImageIcon(getClass().getResource("/Resources/Images/back-Pressed.png")));
 		backBtn.setOpaque(false);
 		backBtn.setContentAreaFilled(false);
 		backBtn.setBorderPainted(false);
@@ -75,9 +75,14 @@ public class MainMenu extends JFrame {
 		for (int i = 0; i < 5; i++) {
 			final int index = i;
 			JButton btn = new JButton();
+<<<<<<< Updated upstream
 			btn.setIcon(new ImageIcon(MainMenu.class.getResource("/Resources/Images/" + imageNames[i] + ".png")));
 			btn.setPressedIcon(
 					new ImageIcon(MainMenu.class.getResource("/Resources/Images/" + imageNames[i] + "-Pressed.png")));
+=======
+			btn.setIcon(new ImageIcon(getClass().getResource("/Resources/Images/" + imageNames[i] + ".png")));
+			btn.setPressedIcon(new ImageIcon(getClass().getResource("/Resources/Images/" + imageNames[i] + "-Pressed.png")));
+>>>>>>> Stashed changes
 			btn.setOpaque(false);
 			btn.setContentAreaFilled(false);
 			btn.setFocusPainted(false);
@@ -129,7 +134,7 @@ public class MainMenu extends JFrame {
 
 		// Background
 		JLabel background = new JLabel();
-		background.setIcon(new ImageIcon(MainMenu.class.getResource("/Resources/Images/GreenBoard.jpg")));
+		background.setIcon(new ImageIcon(getClass().getResource("/Resources/Images/GreenBoard.jpg")));
 		background.setBounds(0, 0, 844, 471);
 		contentPane.add(background);
 

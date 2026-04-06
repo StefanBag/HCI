@@ -45,8 +45,8 @@ public class Input extends JFrame {
 		});
 
 		JButton confirmBtn = new JButton();
-		confirmBtn.setIcon(new ImageIcon(Input.class.getResource("/Resources/Images/play.png")));
-		confirmBtn.setPressedIcon(new ImageIcon(Input.class.getResource("/Resources/Images/play-pressed.png")));
+		confirmBtn.setIcon(new ImageIcon(getClass().getResource("/Resources/Images/play.png")));
+		confirmBtn.setPressedIcon(new ImageIcon(getClass().getResource("/Resources/Images/play-pressed.png")));
 		confirmBtn.setOpaque(false);
 		confirmBtn.setContentAreaFilled(false);
 		confirmBtn.setBorderPainted(false);
@@ -67,8 +67,8 @@ public class Input extends JFrame {
 
 		// Back button
 		JButton backBtn = new JButton();
-		backBtn.setIcon(new ImageIcon(Input.class.getResource("/Resources/Images/back.png")));
-		backBtn.setPressedIcon(new ImageIcon(Input.class.getResource("/Resources/Images/back-Pressed.png")));
+		backBtn.setIcon(new ImageIcon(getClass().getResource("/Resources/Images/back.png")));
+		backBtn.setPressedIcon(new ImageIcon(getClass().getResource("/Resources/Images/back-Pressed.png")));
 		backBtn.setOpaque(false);
 		backBtn.setContentAreaFilled(false);
 		backBtn.setBorderPainted(false);
@@ -78,8 +78,8 @@ public class Input extends JFrame {
 
 		// Submit button
 		JButton submitBtn = new JButton();
-		submitBtn.setIcon(new ImageIcon(Input.class.getResource("/Resources/Images/submitbutton.png")));
-		submitBtn.setPressedIcon(new ImageIcon(Input.class.getResource("/Resources/Images/submitbutton-pressed.png")));
+		submitBtn.setIcon(new ImageIcon(getClass().getResource("/Resources/Images/submitbutton.png")));
+		submitBtn.setPressedIcon(new ImageIcon(getClass().getResource("/Resources/Images/submitbutton-pressed.png")));
 		submitBtn.setOpaque(false);
 		submitBtn.setContentAreaFilled(false);
 		submitBtn.setBorderPainted(false);
@@ -214,7 +214,7 @@ public class Input extends JFrame {
 
 		// Background
 		JLabel background = new JLabel();
-		background.setIcon(new ImageIcon(Input.class.getResource("/Resources/Images/GreenBoard.jpg")));
+		background.setIcon(new ImageIcon(getClass().getResource("/Resources/Images/GreenBoard.jpg")));
 		background.setBounds(0, 0, 844, 471);
 		contentPane.add(background);
 
