@@ -414,8 +414,9 @@ public class WordSearch extends JFrame {
 
         if (foundCount == words.length) {
             JOptionPane.showMessageDialog(this,
-                "Congratulations! You found all " + words.length + " words!",
+                "Congratulations! You found all " + words.length + " words!\nThe game will now reset.",
                 "Puzzle Complete!", JOptionPane.INFORMATION_MESSAGE);
+            resetGame();
         }
     }
 
