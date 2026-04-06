@@ -449,7 +449,7 @@ public class Wordle extends JFrame {
 			newGameBtn.setVisible(true);
 			newGameBtn.setEnabled(true);
 			newGameBtn.requestFocusInWindow();
-			typingHintLabel.setText("Press New Game to play again, or Back to return to menu.");
+			typingHintLabel.setText("Press RESTART to play again, or Back to return to menu.");
 		}
 	}
 
