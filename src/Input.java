@@ -170,6 +170,7 @@ public class Input extends JFrame {
 				submitBtn.removeActionListener(al);
 			}
 			submitBtn.addActionListener(ev -> {
+				// Check all fields are filled
 				boolean allFilled = true;
 				for (int i = 0; i < count; i++) {
 					String word = fields[i].getText().trim();
@@ -180,14 +181,31 @@ public class Input extends JFrame {
 					words[i] = word;
 				}
 				if (!allFilled) {
-					JOptionPane.showMessageDialog(Input.this,
-							"Please fill in all word fields before submitting.",
-							"Missing Words", JOptionPane.WARNING_MESSAGE);
-				} else {
-					MainMenu m = new MainMenu(words);
-					m.setVisible(true);
-					dispose();
+					JOptionPane.showMessageDialog(Input.this,"Please fill in all word fields before submitting.","Missing Words", JOptionPane.WARNING_MESSAGE);
+					return;
 				}
+
+				// Check for duplicate words (case-insensitive)
+				boolean hasDuplicates = false;
+				String duplicateWord = "";
+				for (int i = 0; i < count; i++) {
+					for (int j = i + 1; j < count; j++) {
+						if (words[i].equalsIgnoreCase(words[j])) {
+							hasDuplicates = true;
+							duplicateWord = words[i];
+							break;
+						}
+					}
+					if (hasDuplicates) break;
+				}
+				if (hasDuplicates) {
+					JOptionPane.showMessageDialog(Input.this,"Duplicate word found: " + duplicateWord + ". Please enter unique words only.","Duplicate Word", JOptionPane.WARNING_MESSAGE);
+					return;
+				}
+
+				MainMenu m = new MainMenu(words);
+				m.setVisible(true);
+				dispose();
 			});
 		});
 

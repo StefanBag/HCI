@@ -64,8 +64,7 @@ public class MainMenu extends JFrame {
 		// Row 2 buttons
 		int row2StartX = (860 - (2 * btnW + gapX)) / 2;
 
-		String[] activityNames  = { "Alphabetical", "Word Search", "Wordle", "Missing Letter", "Mixed Words" };
-		String[] imageNames     = { "Alphabetical", "WordSearch", "Wordle", "MissingLetter", "MixedWords" };
+		String[] imageNames     = { "ALPHABETICAL", "WORD_SEARCH", "WORDLE", "MISSING_LETTER", "MIXED_WORDS" };
 
 		for (int i = 0; i < 5; i++) {
 			final int index = i;
