@@ -249,7 +249,7 @@ public class Wordle extends JFrame {
 
 	private void updateInstructionText() {
 		instructionLabel.setText("<html><div style='text-align: center;'>Guess the 5/6 letter word in 6 tries. Type on keyboard and press SUBMIT or Enter.<br>"
-				+ "If no 5/6 words were inputted, a random word will be generated to guess.<br>Green = correct position. Yellow = wrong position. Gray = not in word.</div></html>");
+				+ "If no 5/6 lenght words were inputted, a random word will be generated to guess.<br>Green = correct position. Yellow = wrong position. Gray = not in word.</div></html>");
 	}
 
 	private void installKeyboardInput() {
