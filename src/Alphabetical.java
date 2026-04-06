@@ -59,13 +59,16 @@ public class Alphabetical extends JFrame {
 
 	private JTextArea[] listedNumbers;
 
+	// --- Make buttons class fields so layoutLists() can see them ---
+	private JButton WordUpBtn;
+	private JButton WordDownBtn;
+
 	public Alphabetical(String[] words) {
 		this.words = words;
 		// Populate master model and sorted list
 		for (String word : words) {
 			listModel.addElement(word);
 			SortedList.add(word);
-
 		}
 		Collections.sort(SortedList, String.CASE_INSENSITIVE_ORDER);
 
@@ -90,7 +93,6 @@ public class Alphabetical extends JFrame {
 			listedNumbers[i].setFont(new Font("Ariel", Font.PLAIN, 16));
 			listedNumbers[i].setForeground(new Color(255, 255, 255));
 			contentPane.add(listedNumbers[i]);
-
 		}
 
 		// Instructions panel
@@ -177,17 +179,8 @@ public class Alphabetical extends JFrame {
 			}
 		});
 
-		// Initially fill the two lists from the master model and lay them out
-		updateLists();
-		layoutLists();
-		PositionNumbers();
-
-		// Add lists to content pane
-		contentPane.add(leftList);
-		contentPane.add(rightList);
-
-		// Move word up button
-		JButton WordUpBtn = new JButton("UP");
+		// --- Create UP and DOWN buttons (now as fields) ---
+		WordUpBtn = new JButton("UP");
 		WordUpBtn.setSelectedIcon(null);
 		WordUpBtn.setFocusPainted(false);
 		WordUpBtn.setMargin(new Insets(2, 14, 2, 1));
@@ -201,12 +194,9 @@ public class Alphabetical extends JFrame {
 		WordUpBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				if (selectedMasterIndex > 0) {
-					// Swap with previous element in master model
 					String word = listModel.remove(selectedMasterIndex);
 					listModel.add(selectedMasterIndex - 1, word);
 					selectedMasterIndex--;
-
-					// Update both lists and restore selection manually
 					ignoreSelectionEvents = true;
 					updateLists();
 					layoutLists();
@@ -215,10 +205,8 @@ public class Alphabetical extends JFrame {
 				}
 			}
 		});
-		contentPane.add(WordUpBtn);
 
-		// Move word down button
-		JButton WordDownBtn = new JButton("Down");
+		WordDownBtn = new JButton("Down");
 		WordDownBtn.setMargin(new Insets(2, 14, 2, 1));
 		WordDownBtn.setIconTextGap(0);
 		WordDownBtn.setFocusPainted(false);
@@ -231,12 +219,9 @@ public class Alphabetical extends JFrame {
 		WordDownBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				if (selectedMasterIndex != -1 && selectedMasterIndex < listModel.getSize() - 1) {
-					// Swap with next element in master model
 					String word = listModel.remove(selectedMasterIndex);
 					listModel.add(selectedMasterIndex + 1, word);
 					selectedMasterIndex++;
-
-					// Update both lists and restore selection manually
 					ignoreSelectionEvents = true;
 					updateLists();
 					layoutLists();
@@ -245,7 +230,17 @@ public class Alphabetical extends JFrame {
 				}
 			}
 		});
+
+		// Add lists and buttons to content pane
+		contentPane.add(leftList);
+		contentPane.add(rightList);
+		contentPane.add(WordUpBtn);
 		contentPane.add(WordDownBtn);
+
+		// Initially fill the two lists and lay them out (buttons now exist)
+		updateLists();
+		layoutLists(); // uses button positions to place right list
+		PositionNumbers(); // numbers placed based on final list bounds
 
 		// Submit button – checks if list is sorted
 		JButton SubmitBtn = new JButton();
@@ -260,8 +255,9 @@ public class Alphabetical extends JFrame {
 		SubmitBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				if (AlphabeticalCheck()) {
-					JOptionPane.showMessageDialog(Alphabetical.this, "List Sorted alphabetically!", "success!",
-							JOptionPane.INFORMATION_MESSAGE);
+					JOptionPane.showMessageDialog(Alphabetical.this, "List Sorted alphabetically! List will now reset",
+							"success!", JOptionPane.INFORMATION_MESSAGE);
+					ResetList();
 				} else {
 					JOptionPane.showMessageDialog(Alphabetical.this,
 							"List not sorted alphabetically. " + numberOfIncorrectWords() + " words in wrong position!",
@@ -285,18 +281,7 @@ public class Alphabetical extends JFrame {
 						"Are you sure you want to reset the word order?", "Confirm Reset", JOptionPane.YES_NO_OPTION,
 						JOptionPane.QUESTION_MESSAGE);
 				if (result == JOptionPane.YES_OPTION) {
-					listModel.clear();
-					for (String word : words) {
-						listModel.addElement(word);
-					}
-					selectedMasterIndex = -1;
-					ignoreSelectionEvents = true;
-					updateLists();
-					layoutLists();
-					ignoreSelectionEvents = false;
-					// Clear any lingering selection
-					leftList.clearSelection();
-					rightList.clearSelection();
+					ResetList();
 				}
 			}
 		});
@@ -360,55 +345,67 @@ public class Alphabetical extends JFrame {
 	}
 
 	/**
-	 * Positions the two lists and shows/hides the right list as needed.
+	 * reset the list
+	 */
+	private void ResetList() {
+		listModel.clear();
+		for (String word : words) {
+			listModel.addElement(word);
+		}
+		selectedMasterIndex = -1;
+		ignoreSelectionEvents = true;
+		updateLists();
+		layoutLists();
+		ignoreSelectionEvents = false;
+		leftList.clearSelection();
+		rightList.clearSelection();
+	}
+
+	/**
+	 * Positions the two lists. Left list stays at fixed coordinates. Right list is
+	 * placed exactly 25 pixels to the right of the UP/DOWN buttons.
 	 */
 	private void layoutLists() {
 		int total = listModel.getSize();
 		int leftCount = Math.min(total, MAX_ROWS_PER_COLUMN);
 		int rightCount = total - leftCount;
 
+		// Left list bounds (unchanged)
 		leftList.setBounds(190, 149, leftList.getPreferredSize().width + 10, leftList.getPreferredSize().height);
 
 		if (rightCount > 0) {
-			int rightX = leftList.getX() + leftList.getWidth() + 125;
-			int rightY = leftList.getY();
+			// Right list X = button right edge + 25 pixels
+			int buttonRightEdge = WordUpBtn.getX() + WordUpBtn.getWidth();
+			int rightX = buttonRightEdge + 25;
+			int rightY = leftList.getY(); // same Y as left list
 			rightList.setBounds(rightX, rightY, rightList.getPreferredSize().width + 10,
 					rightList.getPreferredSize().height);
 			rightList.setVisible(true);
 		} else {
 			rightList.setVisible(false);
 		}
-
 	}
 
 	/**
-	 * Position the numbers of leftList and RightList to be called ONLY once, not
-	 * after every action
+	 * Position the numbers of leftList and RightList.
 	 */
-
 	private void PositionNumbers() {
 		int total = listModel.getSize();
-		// Number list: width based on the largest number, height = total rows * fixed
-		// cell height
-		int numberWidth = 50; // fallback
+		int numberWidth = 50;
 		if (total > 0) {
 			String largest = String.valueOf(total);
-			// Estimate width: roughly 12 pixels per digit + padding
 			numberWidth = Math.max(40, largest.length() * 12 + 10);
 		}
 		int numberHeight = leftList.getFixedCellHeight();
 
-		// using this idea, iterate and populate the numbers beside the space beside the
-		// list
 		int x = 0;
 		int leftListY = leftList.getY();
 		for (int i = 0; i < listedNumbers.length; i++) {
-			// first check if we dont need to populate the listed numbers of rightlist
 			ListModel<String> model = leftList.getModel();
-			if (i < model.getSize()) { // print the leftList numbers
+			if (i < model.getSize()) {
 				int y = leftListY + (i * numberHeight);
 				listedNumbers[i].setBounds(leftList.getX() - numberWidth, y, numberWidth, numberHeight);
-			} else { // print the rightList numbers
+			} else {
 				int y = leftListY + (x++ * numberHeight);
 				listedNumbers[i].setBounds(rightList.getX() + rightList.getPreferredSize().width + 10, y, numberWidth,
 						numberHeight);
