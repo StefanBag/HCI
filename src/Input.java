@@ -58,7 +58,7 @@ public class Input extends JFrame {
 
 		// Part 2: User inputs words
 
-		JLabel enterWordsLabel = new JLabel("Enter your words below:", SwingConstants.CENTER);
+		JLabel enterWordsLabel = new JLabel("Enter Your Words Below (Max 10 Characters/Word):", SwingConstants.CENTER);
 		enterWordsLabel.setFont(new Font("Comic Sans MS", Font.BOLD | Font.ITALIC, 22));
 		enterWordsLabel.setForeground(Color.WHITE);
 		enterWordsLabel.setBounds(100, 48, 660, 35);
@@ -153,7 +153,7 @@ public class Input extends JFrame {
 					public void keyTyped(KeyEvent e) {
 						if (!Character.isLetter(e.getKeyChar())) {
 							e.consume();
-						} else if (fields[fi].getText().length() >= 20) {
+						} else if (fields[fi].getText().length() >= 10) {
 							e.consume();
 						}
 					}
