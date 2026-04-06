@@ -2,6 +2,7 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Font;
+import java.awt.Image;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -62,6 +63,17 @@ public class Alphabetical extends JFrame {
 	// --- Make buttons class fields so layoutLists() can see them ---
 	private JButton WordUpBtn;
 	private JButton WordDownBtn;
+
+	private ImageIcon resizeIcon(String path, int width, int height) {
+		java.net.URL imgURL = Alphabetical.class.getResource(path);
+		if (imgURL == null) {
+			System.err.println("Resource not found: " + path);
+			return null;
+		}
+		ImageIcon icon = new ImageIcon(imgURL);
+		Image img = icon.getImage().getScaledInstance(width, height, Image.SCALE_SMOOTH);
+		return new ImageIcon(img);
+	}
 
 	public Alphabetical(String[] words) {
 		this.words = words;
@@ -188,8 +200,8 @@ public class Alphabetical extends JFrame {
 		WordUpBtn.setOpaque(false);
 		WordUpBtn.setContentAreaFilled(false);
 		WordUpBtn.setBorderPainted(false);
-		WordUpBtn.setIcon(new ImageIcon(Alphabetical.class.getResource("/Resources/Images/Up (2).png")));
-		WordUpBtn.setPressedIcon(new ImageIcon(Alphabetical.class.getResource("/Resources/Images/Up (4).png")));
+		WordUpBtn.setIcon(resizeIcon("/Resources/Images/UpArrow (2).png", 70, 70));
+		WordUpBtn.setPressedIcon(resizeIcon("/Resources/Images/UpArrow (4).png", 70, 70));
 		WordUpBtn.setBounds(406, 158, 75, 70);
 		WordUpBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -213,8 +225,8 @@ public class Alphabetical extends JFrame {
 		WordDownBtn.setOpaque(false);
 		WordDownBtn.setContentAreaFilled(false);
 		WordDownBtn.setBorderPainted(false);
-		WordDownBtn.setIcon(new ImageIcon(Alphabetical.class.getResource("/Resources/Images/Down (2).png")));
-		WordDownBtn.setPressedIcon(new ImageIcon(Alphabetical.class.getResource("/Resources/Images/Down (4).png")));
+		WordDownBtn.setIcon(resizeIcon("/Resources/Images/DownArrow (2).png", 70, 70));
+		WordDownBtn.setPressedIcon(resizeIcon("/Resources/Images/DownArrow (4).png", 70, 70));
 		WordDownBtn.setBounds(406, 251, 75, 70);
 		WordDownBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
