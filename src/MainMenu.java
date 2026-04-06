@@ -75,14 +75,11 @@ public class MainMenu extends JFrame {
 		for (int i = 0; i < 5; i++) {
 			final int index = i;
 			JButton btn = new JButton();
-<<<<<<< Updated upstream
 			btn.setIcon(new ImageIcon(MainMenu.class.getResource("/Resources/Images/" + imageNames[i] + ".png")));
 			btn.setPressedIcon(
 					new ImageIcon(MainMenu.class.getResource("/Resources/Images/" + imageNames[i] + "-Pressed.png")));
-=======
 			btn.setIcon(new ImageIcon(getClass().getResource("/Resources/Images/" + imageNames[i] + ".png")));
 			btn.setPressedIcon(new ImageIcon(getClass().getResource("/Resources/Images/" + imageNames[i] + "-Pressed.png")));
->>>>>>> Stashed changes
 			btn.setOpaque(false);
 			btn.setContentAreaFilled(false);
 			btn.setFocusPainted(false);
